@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.meano.Residence.Residence;
+import net.meano.Residence.Tools.ActionBar;
 import net.meano.Residence.chat.ChatChannel;
 import net.meano.Residence.event.ResidenceChangedEvent;
 import net.meano.Residence.event.ResidenceEnterEvent;
@@ -510,7 +511,7 @@ public class ResidencePlayerListener implements Listener {
 				Residence.getServ().getPluginManager().callEvent(chgEvent);
 
 				if (leave != null && !leave.equals("")) {
-					player.sendMessage(ChatColor.YELLOW + this.insertMessages(player, ResOld.getName(), ResOld, leave));
+					ActionBar.send(player, ChatColor.BLUE + ChatColor.BOLD.toString() + this.insertMessages(player, ResOld.getName(), ResOld, leave));
 				}
 				currentRes.remove(pname);
 				Residence.getChatManager().removeFromChannel(pname);
@@ -525,7 +526,7 @@ public class ResidencePlayerListener implements Listener {
 				} else {
 					player.teleport(res.getOutsideFreeLoc(loc));
 				}
-				player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceMoveDeny", res.getName().split("\\.")[res.getName().split("\\.").length - 1]));
+				ActionBar.send(player, ChatColor.RED+ ChatColor.BOLD.toString() + Residence.getLanguage().getPhrase("ResidenceMoveDeny", res.getName().split("\\.")[res.getName().split("\\.").length - 1]));
 				return;
 			}
 		}
@@ -553,7 +554,7 @@ public class ResidencePlayerListener implements Listener {
 				Residence.getServ().getPluginManager().callEvent(leaveevent);
 
 				if (leave != null && !leave.equals("") && ResOld != res.getParent()) {
-					player.sendMessage(ChatColor.YELLOW + this.insertMessages(player, ResOld.getName(), ResOld, leave));
+					ActionBar.send(player, ChatColor.BLUE + ChatColor.BOLD.toString() + this.insertMessages(player, ResOld.getName(), ResOld, leave));
 				}
 			}
 			String enterMessage = res.getEnterMessage();
@@ -573,7 +574,8 @@ public class ResidencePlayerListener implements Listener {
 			Residence.getServ().getPluginManager().callEvent(chgEvent);
 
 			if (enterMessage != null && !enterMessage.equals("") && !(ResOld != null && res == ResOld.getParent())) {
-				player.sendMessage(ChatColor.YELLOW + this.insertMessages(player, areaname, res, enterMessage));
+				ActionBar.send(player, ChatColor.BLUE + ChatColor.BOLD.toString() + this.insertMessages(player, areaname, res, enterMessage));
+				
 			}
 		}
 		if (chatchange && chatenabled) {
