@@ -54,6 +54,9 @@ Language:
     SubzoneCollide: 'Subzone collides with subzone %1'
     SubzoneMaxDepth: You have reached the maximum allowed subzone depth.
     SubzoneSelectInside: Both selection points must be inside the residence.
+
+    SelectChunks: Select two chunks first!
+
     SelectPoints: Select two points first before using this command!
     SelectionSuccess: Selection Successful!
     SelectionFail: Invalid select command...
@@ -133,7 +136,10 @@ Language:
     NoPVPZone: No PVP zone.
     FlagDeny: 'You dont have %1 permission<s> here.'
     FlagSetDeny: 'Owner does not have access to flag %1'
-    SelectPoint: 'Placed %1 Selection Point'
+
+    SelectChunk: 'Selected %1 Chunk: '
+
+    SelectPoint: 'Placed %1 Selection Point: '
     ResidenceChat: 'Residence chat toggled %1'
     ResidenceMoveDeny: 'You dont have movement permission for Residence %1'
     TeleportDeny: You dont have teleport access.

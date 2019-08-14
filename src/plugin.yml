@@ -1,10 +1,12 @@
 name: Residence
 main: net.meano.Residence.ResidenceCommandListener
 version: 2.7
-website: http://www.meano.net
+api-version: 1.14
+website: www.meano.net
 description: Residence Plugin
 author: Meano
 softdepend: [Vault,PermissionsBukkit,WorldEdit]
+
 commands:
   res:
     description: Manage Residences
@@ -27,6 +29,7 @@ commands:
   resworld:
     description: §cRemoves every residence in a world.
     usage: §c/resworld remove [world]
+
 permissions:
   residence.admin:
     description: Gives you access to /resadmin

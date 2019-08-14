@@ -99,29 +99,28 @@ public class ItemList {
 		return ItemList.readList(node, new ItemList());
 	}
 
-	@SuppressWarnings("deprecation")
 	protected static ItemList readList(ConfigurationSection node, ItemList list) {
 		ListType type = ListType.valueOf(node.getString("Type", "").toUpperCase());
 		list.type = type;
 		List<String> items = node.getStringList("Items");
 		if (items != null) {
 			for (String item : items) {
-				int parse = -1;
-				try {
-					parse = Integer.parseInt(item);
-				} catch (Exception ex) {
-				}
-				if (parse == -1) {
+//				int parse = -1;
+//				try {
+//					parse = Integer.parseInt(item);
+//				} catch (Exception ex) {
+//				}
+//				if (parse == -1) {
 					try {
 						list.add(Material.valueOf(item.toUpperCase()));
 					} catch (Exception ex) {
 					}
-				} else {
-					try {
-						list.add(Material.getMaterial(parse));
-					} catch (Exception ex) {
-					}
-				}
+//				} else {
+//					try {
+//						list.add(Material.getMaterial(parse));
+//					} catch (Exception ex) {
+//					}
+//				}
 			}
 		}
 		return list;

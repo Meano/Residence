@@ -54,6 +54,9 @@ Language:
     SubzoneCollide: '附属领地与另一个附属领地 %1 冲突。'
     SubzoneMaxDepth: '您已达到了系统允许的最大分区深度。'
     SubzoneSelectInside: '两个选择点必须在领地内。'
+
+    SelectChunks: '请先选择领地起始区块和结束区块！'
+
     SelectPoints: '在用这个命令之前，请先用选择工具选取两个点！'
     SelectionSuccess: '选择成功！'
     SelectionFail: '无效的选择命令...'
@@ -133,7 +136,10 @@ Language:
     NoPVPZone: '没有PVP的区域.'
     FlagDeny: '你没有拥有领地 %1 的权限.'
     FlagSetDeny: '所有者不能使用这个权限 %1'
-    SelectPoint: '选择了 %1 的选择点'
+    
+    SelectChunk: '选择了 %1 区块: '
+    
+    SelectPoint: '选择了 %1 坐标点: '
     ResidenceChat: '领地聊天切换到 %1 '
     ResidenceMoveDeny: '你没有领地 %1 的移动权限'
     TeleportDeny: '你没有传送权限。'

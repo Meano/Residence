@@ -81,7 +81,7 @@ public class ResidenceEntityListener implements Listener {
 		Entity entity = event.getEntity();
 		FlagPermissions perms = Residence.getPermsByLoc(block.getLocation());
 		boolean hastrample = perms.has("trample", perms.has("hasbuild", true));
-		if (!hastrample && !(entity.getType() == EntityType.FALLING_BLOCK) && (mat == Material.SOIL || mat == Material.SOUL_SAND)) {
+		if (!hastrample && !(entity.getType() == EntityType.FALLING_BLOCK) && (mat == Material.COARSE_DIRT || mat == Material.SOUL_SAND)) {
 			event.setCancelled(true);
 		}
 	}

@@ -6,10 +6,10 @@
 package net.meano.Residence.permissions;
 
 import java.util.List;
+import net.meano.PermissionsBukkit.Group;
+import net.meano.PermissionsBukkit.PermissionsPlugin;
 import net.meano.Residence.Residence;
 import org.bukkit.entity.Player;
-import com.platymuus.bukkit.permissions.Group;
-import com.platymuus.bukkit.permissions.PermissionsPlugin;
 
 /**
  * 

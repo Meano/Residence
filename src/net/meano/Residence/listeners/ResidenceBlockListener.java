@@ -149,7 +149,7 @@ public class ResidenceBlockListener implements Listener {
 		Block RetractBlock = event.getBlock().getRelative(RetractFace).getRelative(RetractFace);
 		ClaimedResidence resPiston = Residence.getResidenceManager().getByLoc(event.getBlock().getLocation());
 		// 若为粘性活塞
-		if (event.getBlock().getType().equals(Material.PISTON_MOVING_PIECE)) {
+		if (event.getBlock().getType().equals(Material.STICKY_PISTON)) {
 			// 若拉动方块为史莱姆方块
 			if (RetractBlock.getType().equals(Material.SLIME_BLOCK)) {
 				ClaimedResidence resEndSlimeBlock = Residence.getResidenceManager().getByLoc(getEndSlimeBlock(RetractBlock, RetractFace).getLocation());
@@ -219,13 +219,13 @@ public class ResidenceBlockListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		if (mat == Material.LAVA || mat == Material.STATIONARY_LAVA) {
+		if (mat == Material.LAVA) {
 			if (!perms.has("lavaflow", hasflow)) {
 				event.setCancelled(true);
 			}
 			return;
 		}
-		if (mat == Material.WATER || mat == Material.STATIONARY_WATER) {
+		if (mat == Material.WATER) {
 			if (!perms.has("waterflow", hasflow)) {
 				event.setCancelled(true);
 			}

@@ -172,17 +172,23 @@ public class FlagPermissions {
 		addFlagToFlagGroup("trusted", "move");
 		addFlagToFlagGroup("fire", "ignite");
 		addFlagToFlagGroup("fire", "firespread");
-		addMaterialToUseFlag(Material.DIODE, "diode");
-		addMaterialToUseFlag(Material.DIODE_BLOCK_OFF, "diode");
-		addMaterialToUseFlag(Material.DIODE_BLOCK_ON, "diode");
-		addMaterialToUseFlag(Material.WORKBENCH, "table");
-		addMaterialToUseFlag(Material.WOODEN_DOOR, "door");
+
+		addMaterialToUseFlag(Material.COMPARATOR, "diode");
+		addMaterialToUseFlag(Material.REPEATER, "diode");
+
+		addMaterialToUseFlag(Material.CARTOGRAPHY_TABLE, "table");
+		addMaterialToUseFlag(Material.CRAFTING_TABLE, "table");
+		addMaterialToUseFlag(Material.ENCHANTING_TABLE, "table");
+		addMaterialToUseFlag(Material.FLETCHING_TABLE, "table");
+		addMaterialToUseFlag(Material.SMITHING_TABLE, "table");
+		
 		/* 1.8 Doors */
 		addMaterialToUseFlag(Material.SPRUCE_DOOR, "door");
 		addMaterialToUseFlag(Material.BIRCH_DOOR, "door");
 		addMaterialToUseFlag(Material.JUNGLE_DOOR, "door");
 		addMaterialToUseFlag(Material.ACACIA_DOOR, "door");
 		addMaterialToUseFlag(Material.DARK_OAK_DOOR, "door");
+		addMaterialToUseFlag(Material.IRON_DOOR, "door");
 
 		/* 1.8 Fence Gates */
 		addMaterialToUseFlag(Material.SPRUCE_FENCE_GATE, "door");
@@ -190,20 +196,31 @@ public class FlagPermissions {
 		addMaterialToUseFlag(Material.JUNGLE_FENCE_GATE, "door");
 		addMaterialToUseFlag(Material.ACACIA_FENCE_GATE, "door");
 		addMaterialToUseFlag(Material.DARK_OAK_FENCE_GATE, "door");
+		addMaterialToUseFlag(Material.OAK_FENCE_GATE, "door");
 
-		addMaterialToUseFlag(Material.FENCE_GATE, "door");
-		addMaterialToUseFlag(Material.NETHER_FENCE, "door");
-		addMaterialToUseFlag(Material.TRAP_DOOR, "door");
-		addMaterialToUseFlag(Material.ENCHANTMENT_TABLE, "enchant");
-		addMaterialToUseFlag(Material.STONE_BUTTON, "button");
+		addMaterialToUseFlag(Material.BLACK_BED, "bed");
+		addMaterialToUseFlag(Material.BLUE_BED, "bed");
+		addMaterialToUseFlag(Material.BROWN_BED, "bed");
+		addMaterialToUseFlag(Material.CYAN_BED, "bed");
+		addMaterialToUseFlag(Material.GRAY_BED, "bed");
+		addMaterialToUseFlag(Material.GREEN_BED, "bed");
+		addMaterialToUseFlag(Material.LIGHT_BLUE_BED, "bed");
+		addMaterialToUseFlag(Material.LIGHT_GRAY_BED, "bed");
+		addMaterialToUseFlag(Material.LIME_BED, "bed");
+		addMaterialToUseFlag(Material.MAGENTA_BED, "bed");
+		addMaterialToUseFlag(Material.ORANGE_BED, "bed");
+		addMaterialToUseFlag(Material.PINK_BED, "bed");
+		addMaterialToUseFlag(Material.PURPLE_BED, "bed");
+		addMaterialToUseFlag(Material.RED_BED, "bed");
+		addMaterialToUseFlag(Material.WHITE_BED, "bed");
+		addMaterialToUseFlag(Material.YELLOW_BED, "bed");
+		
 		addMaterialToUseFlag(Material.LEVER, "lever");
-		addMaterialToUseFlag(Material.BED_BLOCK, "bed");
 		addMaterialToUseFlag(Material.BREWING_STAND, "brew");
 		addMaterialToUseFlag(Material.CAKE, "cake");
 		addMaterialToUseFlag(Material.NOTE_BLOCK, "note");
 		addMaterialToUseFlag(Material.DRAGON_EGG, "egg");
-		addMaterialToUseFlag(Material.COMMAND, "commandblock");
-		addMaterialToUseFlag(Material.WOOD_BUTTON, "button");
+		addMaterialToUseFlag(Material.COMMAND_BLOCK, "commandblock");
 		addMaterialToUseFlag(Material.ANVIL, "anvil");
 		addMaterialToUseFlag(Material.FLOWER_POT, "flowerpot");
 		addMaterialToUseFlag(Material.BEACON, "beacon");
@@ -213,9 +230,17 @@ public class FlagPermissions {
 		addMaterialToUseFlag(Material.HOPPER, "container");
 		addMaterialToUseFlag(Material.DROPPER, "container");
 		addMaterialToUseFlag(Material.FURNACE, "container");
-		addMaterialToUseFlag(Material.BURNING_FURNACE, "container");
+		addMaterialToUseFlag(Material.BLAST_FURNACE, "container");
 		addMaterialToUseFlag(Material.DISPENSER, "container");
-		addMaterialToUseFlag(Material.CAKE_BLOCK, "cake");
+		addMaterialToUseFlag(Material.CAKE, "cake");
+		
+		addMaterialToUseFlag(Material.ACACIA_BUTTON, "button");
+		addMaterialToUseFlag(Material.BIRCH_BUTTON, "button");
+		addMaterialToUseFlag(Material.DARK_OAK_BUTTON, "button");
+		addMaterialToUseFlag(Material.JUNGLE_BUTTON, "button");
+		addMaterialToUseFlag(Material.OAK_BUTTON, "button");
+		addMaterialToUseFlag(Material.SPRUCE_BUTTON, "button");
+		addMaterialToUseFlag(Material.STONE_BUTTON, "button");
 	}
 
 	public static FlagPermissions parseFromConfigNode(String name, ConfigurationSection node) {

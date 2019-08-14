@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.meano.Residence.selection;
 
 import java.util.Collections;
@@ -17,13 +12,14 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Administrator
- */
+
 public class SelectionManager {
 	protected Map<String, Location> playerLoc1;
 	protected Map<String, Location> playerLoc2;
+	
+	protected Map<String, Chunk> playerChunk1;
+	protected Map<String, Chunk> playerChunk2;
+	
 	protected Server server;
 
 	public static final int MAX_HEIGHT = 255, MIN_HEIGHT = 0;
@@ -34,8 +30,24 @@ public class SelectionManager {
 
 	public SelectionManager(Server server) {
 		this.server = server;
+		
+		playerChunk1 = Collections.synchronizedMap(new HashMap<String, Chunk>());
+		playerChunk2 = Collections.synchronizedMap(new HashMap<String, Chunk>());
+		
 		playerLoc1 = Collections.synchronizedMap(new HashMap<String, Location>());
 		playerLoc2 = Collections.synchronizedMap(new HashMap<String, Location>());
+	}
+	
+	public void SelectChunk(Player player, Chunk chunk, boolean isFirstChunk) {
+		if(chunk == null) {
+			return;
+		}
+		if(isFirstChunk) {
+			playerChunk1.put(player.getName(), chunk);
+		}
+		else {
+			playerChunk2.put(player.getName(), chunk);
+		}
 	}
 
 	public void placeLoc1(Player player, Location loc) {
@@ -51,15 +63,44 @@ public class SelectionManager {
 	}
 
 	public Location getPlayerLoc1(String player) {
-		return playerLoc1.get(player);
+		Location selectLocation1 = null;
+		if(Residence.getConfigManager().IsSelectChunk()) {
+			if(hasPlacedBoth(player)) {
+				Chunk chunk1 = playerChunk1.get(player);
+				Chunk chunk2 = playerChunk2.get(player);
+				int x = chunk1.getX() <= chunk2.getX() ? chunk1.getX() * 16 : chunk1.getX() * 16 + 15;
+				int z = chunk1.getZ() <= chunk2.getZ() ? chunk1.getZ() * 16 : chunk1.getZ() * 16 + 15;
+				selectLocation1 = chunk1.getBlock(x, MIN_HEIGHT, z).getLocation();
+			}
+		}
+		else {
+			selectLocation1 = playerLoc1.get(player);
+		}
+		return selectLocation1;
 	}
 
 	public Location getPlayerLoc2(String player) {
-		return playerLoc2.get(player);
+		Location selectLocation2 = null;
+		if(Residence.getConfigManager().IsSelectChunk()) {
+			if(hasPlacedBoth(player)) {
+				Chunk chunk1 = playerChunk1.get(player);
+				Chunk chunk2 = playerChunk2.get(player);
+				int x = chunk2.getX() >= chunk1.getX() ? chunk2.getX() * 16 + 15: chunk2.getX() * 16;
+				int z = chunk2.getZ() >= chunk1.getZ() ? chunk2.getZ() * 16 + 15: chunk2.getZ() * 16;
+				selectLocation2 = chunk1.getBlock(x, MAX_HEIGHT, z).getLocation();
+			}
+		}
+		else {
+			selectLocation2 = playerLoc1.get(player);
+		}
+		return selectLocation2;
 	}
 
 	public boolean hasPlacedBoth(String player) {
-		return (playerLoc1.containsKey(player) && playerLoc2.containsKey(player));
+		if(Residence.getConfigManager().IsSelectChunk())
+			return playerChunk1.containsKey(player) && playerChunk2.containsKey(player);
+		else
+			return (playerLoc1.containsKey(player) && playerLoc2.containsKey(player));
 	}
 
 	public void showSelectionInfo(Player player) {

@@ -21,8 +21,9 @@ public class ConfigManager {
 	protected String economySystem;
 	protected boolean adminsOnly;
 	protected boolean allowEmptyResidences;
-	protected int infoToolId;
-	protected int selectionToolId;
+	protected Material infoTool;
+	protected Material selectionTool;
+	protected boolean isSelectChunk;
 	protected boolean adminOps;
 	protected String multiworldPlugin;
 	protected boolean enableRentSystem;
@@ -46,9 +47,9 @@ public class ConfigManager {
 	protected boolean spoutEnable;
 	protected boolean enableLeaseMoneyAccount;
 	protected boolean enableDebug;
-	protected List<Integer> customContainers;
-	protected List<Integer> customBothClick;
-	protected List<Integer> customRightClick;
+	protected List<String> customContainers;
+	protected List<String> customBothClick;
+	protected List<String> customRightClick;
 	private boolean enforceAreaInsideArea;
 
 	public ConfigManager(FileConfiguration config) {
@@ -58,7 +59,6 @@ public class ConfigManager {
 		this.load(config);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void load(FileConfiguration config) {
 		defaultGroup = config.getString("Global.DefaultGroup", "default").toLowerCase();
 		adminsOnly = config.getBoolean("Global.AdminOnlyCommands", false);
@@ -66,8 +66,9 @@ public class ConfigManager {
 		leaseAutoRenew = config.getBoolean("Global.LeaseAutoRenew", true);
 		enableEconomy = config.getBoolean("Global.EnableEconomy", false);
 		economySystem = config.getString("Global.EconomySystem", "iConomy");
-		infoToolId = config.getInt("Global.InfoToolId", Material.STRING.getId());
-		selectionToolId = config.getInt("Global.SelectionToolId", Material.WOOD_AXE.getId());
+		infoTool = Material.getMaterial(config.getString("Global.InfoToolId", Material.STRING.toString()));
+		selectionTool = Material.getMaterial(config.getString("Global.SelectionToolId", Material.WOODEN_AXE.toString()));
+		isSelectChunk = config.getBoolean("Global.IsSelectChunk", true);
 		adminOps = config.getBoolean("Global.AdminOPs", true);
 		multiworldPlugin = config.getString("Global.MultiWorldPlugin");
 		enableRentSystem = config.getBoolean("Global.EnableRentSystem", false);
@@ -89,9 +90,9 @@ public class ConfigManager {
 		spoutEnable = config.getBoolean("Global.EnableSpout", false);
 		enableLeaseMoneyAccount = config.getBoolean("Global.EnableLeaseMoneyAccount", true);
 		enableDebug = config.getBoolean("Global.EnableDebug", false);
-		customContainers = config.getIntegerList("Global.CustomContainers");
-		customBothClick = config.getIntegerList("Global.CustomBothClick");
-		customRightClick = config.getIntegerList("Global.CustomRightClick");
+		customContainers = config.getStringList("Global.CustomContainers");
+		customBothClick = config.getStringList("Global.CustomBothClick");
+		customRightClick = config.getStringList("Global.CustomRightClick");
 		ConfigurationSection node = config.getConfigurationSection("Global.GroupDefault");
 		if (node != null) {
 			Set<String> keys = node.getConfigurationSection(defaultGroup).getKeys(false);
@@ -140,12 +141,16 @@ public class ConfigManager {
 		return allowEmptyResidences;
 	}
 
-	public int getInfoToolID() {
-		return infoToolId;
+	public Material getInfoToolID() {
+		return infoTool;
 	}
 
-	public int getSelectionTooldID() {
-		return selectionToolId;
+	public Material getSelectionTooldID() {
+		return selectionTool;
+	}
+	
+	public boolean IsSelectChunk() {
+		return isSelectChunk;
 	}
 
 	public boolean getOpsAreAdmins() {
@@ -232,15 +237,15 @@ public class ConfigManager {
 		return enableDebug;
 	}
 
-	public List<Integer> getCustomContainers() {
+	public List<String> getCustomContainers() {
 		return customContainers;
 	}
 
-	public List<Integer> getCustomBothClick() {
+	public List<String> getCustomBothClick() {
 		return customBothClick;
 	}
 
-	public List<Integer> getCustomRightClick() {
+	public List<String> getCustomRightClick() {
 		return customRightClick;
 	}
 

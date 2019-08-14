@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.meano.PermissionsBukkit.PermissionsPlugin;
 import net.meano.Residence.Residence;
 import net.meano.Residence.protection.FlagPermissions;
 import net.meano.Residence.vaultinterface.ResidenceVaultAdapter;
@@ -20,7 +21,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import com.platymuus.bukkit.permissions.PermissionsPlugin;
 
 /**
  * 

@@ -20,6 +20,7 @@ import net.meano.Residence.permissions.PermissionGroup;
 import net.meano.Residence.text.help.InformationPager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -569,7 +570,6 @@ public class ClaimedResidence {
 		player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("MessageChange"));
 	}
 
-	@SuppressWarnings("deprecation")
 	public Location getOutsideFreeLoc(Location insideLoc) {
 		int maxIt = 100;
 		CuboidArea area = this.getAreaByLoc(insideLoc);
@@ -587,11 +587,11 @@ public class ClaimedResidence {
 			newLoc.setZ(newLoc.getBlockZ() + 1);
 			lowLoc = new Location(newLoc.getWorld(), newLoc.getBlockX(), 254, newLoc.getBlockZ());
 			newLoc.setY(255);
-			while ((newLoc.getBlock().getTypeId() != 0 || lowLoc.getBlock().getTypeId() == 0) && lowLoc.getBlockY() > -126) {
+			while (((!newLoc.getBlock().getType().equals(Material.AIR)) || (!lowLoc.getBlock().getType().equals(Material.AIR))) && lowLoc.getBlockY() > -126) {
 				newLoc.setY(newLoc.getY() - 1);
 				lowLoc.setY(lowLoc.getY() - 1);
 			}
-			if (newLoc.getBlock().getTypeId() == 0 && lowLoc.getBlock().getTypeId() != 0) {
+			if (!newLoc.getBlock().getType().equals(Material.AIR) && !lowLoc.getBlock().getType().equals(Material.AIR)) {
 				found = true;
 			}
 		}
