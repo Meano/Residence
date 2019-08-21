@@ -113,7 +113,7 @@ public class Residence extends JavaPlugin {
 					saveYml();
 				}
 			} catch (Exception ex) {
-				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] ·şÎñÆ÷±£´æ³ö´í£¡", ex);
+				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] æœåŠ¡å™¨ä¿å­˜å‡ºé”™ï¼", ex);
 			}
 		}
 	};
@@ -143,9 +143,9 @@ public class Residence extends JavaPlugin {
 				saveYml();
 				ZipLibrary.backup();
 			} catch (Exception ex) {
-				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] ·şÎñÆ÷±£´æ³ö´í£¡", ex);
+				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] æœåŠ¡å™¨ä¿å­˜å‡ºé”™ï¼", ex);
 			}
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] ²å¼şÒÑĞ¶ÔØ!");
+			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] æ’ä»¶å·²å¸è½½!");
 		}
 	}
 
@@ -235,7 +235,7 @@ public class Residence extends JavaPlugin {
 				 * (economy == null) { this.loadIConomy(); }
 				 */
 				if (economy == null) {
-					System.out.println("[Residence] ÕÒ²»µ½¾­¼ÃÏµÍ³²å¼ş");
+					System.out.println("[Residence] æ‰¾ä¸åˆ°ç»æµç³»ç»Ÿæ’ä»¶");
 				}
 			}
 			try {
@@ -323,7 +323,7 @@ public class Residence extends JavaPlugin {
 			 * metrics.start(); } catch (IOException e) { // Failed
 			 * to submit the stats :-( }
 			 */
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] ÔØÈë! °æ±¾ " + this.getDescription().getVersion() + " by Meano!");
+			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] è½½å…¥! ç‰ˆæœ¬ " + this.getDescription().getVersion() + " by Meano!");
 			initsuccess = true;
 		} catch (Exception ex) {
 			initsuccess = false;

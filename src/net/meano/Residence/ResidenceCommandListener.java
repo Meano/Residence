@@ -41,7 +41,7 @@ public class ResidenceCommandListener extends Residence {
 				}
 			} else {
 				this.reloadPlugin();
-				System.out.println("[Residence] 领地在控制台重载.");
+				System.out.println("[Residence] 棰嗗湴鍦ㄦ帶鍒跺彴閲嶈浇.");
 			}
 			return true;
 		}
