@@ -48,6 +48,7 @@ public class PermissionGroup {
 	protected boolean cancreate;
 	protected String groupname;
 	protected int maxPhysical;
+	protected int maxTotalAreas;
 	protected boolean unstuck;
 	protected int minHeight;
 	protected int maxHeight;
@@ -81,6 +82,7 @@ public class PermissionGroup {
 		cancreate = limits.getBoolean("Residence.CanCreate", false);
 		resmax = limits.getInt("Residence.MaxResidences", 0);
 		maxPhysical = limits.getInt("Residence.MaxAreasPerResidence", 2);
+		maxTotalAreas = limits.getInt("Residence.MaxTotalAreasResidence", 128 * 128);
 		xmax = limits.getInt("Residence.MaxEastWest", 0);
 		ymax = limits.getInt("Residence.MaxUpDown", 0);
 		zmax = limits.getInt("Residence.MaxNorthSouth", 0);
@@ -250,6 +252,10 @@ public class PermissionGroup {
 	public int getMaxPhysicalPerResidence() {
 		return maxPhysical;
 	}
+	
+	public int getMaxTotalAreas() {
+		return maxTotalAreas;
+	}
 
 	public Set<Entry<String, Boolean>> getDefaultResidenceFlags() {
 		return residenceDefaultFlags.entrySet();
@@ -293,6 +299,7 @@ public class PermissionGroup {
 		player.sendMessage(ChatColor.YELLOW + "Residence Admin:" + ChatColor.DARK_AQUA + " " + Residence.getPermissionManager().isResidenceAdmin(player));
 		player.sendMessage(ChatColor.YELLOW + "Can Create Residences:" + ChatColor.DARK_AQUA + " " + cancreate);
 		player.sendMessage(ChatColor.YELLOW + "Max Residences:" + ChatColor.DARK_AQUA + " " + resmax);
+		player.sendMessage(ChatColor.YELLOW + "Max Total Areas:" + ChatColor.DARK_AQUA + " " + maxTotalAreas);
 		player.sendMessage(ChatColor.YELLOW + "Max East/West Size:" + ChatColor.DARK_AQUA + " " + xmax);
 		player.sendMessage(ChatColor.YELLOW + "Max North/South Size:" + ChatColor.DARK_AQUA + " " + zmax);
 		player.sendMessage(ChatColor.YELLOW + "Max Up/Down Size:" + ChatColor.DARK_AQUA + " " + ymax);

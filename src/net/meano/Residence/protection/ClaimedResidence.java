@@ -509,6 +509,15 @@ public class ClaimedResidence {
 		}
 		return size;
 	}
+	
+	public long getTotalAreaSize() {
+		Collection<CuboidArea> set = areas.values();
+		long size = 0;
+		for (CuboidArea entry : set) {
+			size = size + entry.getXSize() * entry.getZSize();
+		}
+		return size;
+	}
 
 	public CuboidArea[] getAreaArray() {
 		CuboidArea[] temp = new CuboidArea[areas.size()];

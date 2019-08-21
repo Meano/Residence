@@ -177,6 +177,11 @@ public class ResidenceManager {
 				player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceTooMany"));
 				return false;
 			}
+			
+			if (getOwnedZoneAreas(player.getName()) >= group.getMaxTotalAreas() && !resadmin) {
+				player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceTotalFull") + group.getMaxTotalAreas());
+				return false;
+			}
 		}
 		CuboidArea newArea = new CuboidArea(loc1, loc2);
 		ClaimedResidence newRes = new ClaimedResidence(owner, loc1.getWorld().getName());
@@ -397,6 +402,17 @@ public class ResidenceManager {
 			}
 		}
 		return count;
+	}
+	
+	public long getOwnedZoneAreas(String player) {
+		Collection<ClaimedResidence> set = residences.values();
+		long areas = 0;
+		for (ClaimedResidence res : set) {
+			if (res.getPermissions().getOwner().equalsIgnoreCase(player)) {
+				areas += res.getTotalAreaSize();
+			}
+		}
+		return areas;
 	}
 
 	public void printAreaInfo(String areaname, Player player) {

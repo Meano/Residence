@@ -103,6 +103,9 @@ Language:
     ResidenceForSale: 'Residence %1 is now for sale for %2'
     ResidenceStopSelling: Residence is no longer for sale.
     ResidenceTooMany: You already own the max number of residences your allowed to.
+    
+    ResidenceTotalFull: 'Total Residence areas is big then'
+    
     ResidenceMaxRent: You already are renting the maximum number of residences your allowed to.
     ResidenceAlreadyRent: Residence is already for rent...
     ResidenceNotForRent: Residence not for rent...

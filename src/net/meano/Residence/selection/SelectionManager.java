@@ -68,8 +68,8 @@ public class SelectionManager {
 			if(hasPlacedBoth(player)) {
 				Chunk chunk1 = playerChunk1.get(player);
 				Chunk chunk2 = playerChunk2.get(player);
-				int x = chunk1.getX() <= chunk2.getX() ? chunk1.getX() * 16 : chunk1.getX() * 16 + 15;
-				int z = chunk1.getZ() <= chunk2.getZ() ? chunk1.getZ() * 16 : chunk1.getZ() * 16 + 15;
+				int x = chunk1.getX() <= chunk2.getX() ? 0 : 15;
+				int z = chunk1.getZ() <= chunk2.getZ() ? 0 : 15;
 				selectLocation1 = chunk1.getBlock(x, MIN_HEIGHT, z).getLocation();
 			}
 		}
@@ -85,9 +85,9 @@ public class SelectionManager {
 			if(hasPlacedBoth(player)) {
 				Chunk chunk1 = playerChunk1.get(player);
 				Chunk chunk2 = playerChunk2.get(player);
-				int x = chunk2.getX() >= chunk1.getX() ? chunk2.getX() * 16 + 15: chunk2.getX() * 16;
-				int z = chunk2.getZ() >= chunk1.getZ() ? chunk2.getZ() * 16 + 15: chunk2.getZ() * 16;
-				selectLocation2 = chunk1.getBlock(x, MAX_HEIGHT, z).getLocation();
+				int x = chunk2.getX() >= chunk1.getX() ? 15 : 0;
+				int z = chunk2.getZ() >= chunk1.getZ() ? 15 : 0;
+				selectLocation2 = chunk2.getBlock(x, MAX_HEIGHT, z).getLocation();
 			}
 		}
 		else {
@@ -106,13 +106,16 @@ public class SelectionManager {
 	public void showSelectionInfo(Player player) {
 		String pname = player.getName();
 		if (this.hasPlacedBoth(pname)) {
+//			player.sendMessage(ChatColor.YELLOW + "p1" + getPlayerLoc1(pname).getBlockX() + "," + getPlayerLoc1(pname).getBlockY() + "," + getPlayerLoc1(pname).getBlockZ());
+//			player.sendMessage(ChatColor.YELLOW + "p1" + getPlayerLoc2(pname).getBlockX() + "," + getPlayerLoc2(pname).getBlockY() + "," + getPlayerLoc2(pname).getBlockZ());
 			CuboidArea cuboidArea = new CuboidArea(getPlayerLoc1(pname), getPlayerLoc2(pname));
-			player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Selection.Total.Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getSize());
+			player.sendMessage(ChatColor.YELLOW + "当前剩余可用领地面积: " +  ChatColor.DARK_AQUA + (Residence.getPermissionManager().getGroup(pname, getPlayerLoc1(pname).getWorld().getName()).getMaxTotalAreas() - Residence.getResidenceManager().getOwnedZoneAreas(player.getName())));
+			player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Selection.Total.Size") + ":" + ChatColor.DARK_AQUA + " " + (cuboidArea.getXSize() * cuboidArea.getZSize()));
 			PermissionGroup group = Residence.getPermissionManager().getGroup(player);
 			if (Residence.getConfigManager().enableEconomy())
 				player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Land.Cost") + ":" + ChatColor.DARK_AQUA + " " + ((int) Math.ceil((double) cuboidArea.getSize() * group.getCostPerBlock())));
 			player.sendMessage(ChatColor.YELLOW + "X" + Residence.getLanguage().getPhrase("Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getXSize());
-			player.sendMessage(ChatColor.YELLOW + "Y" + Residence.getLanguage().getPhrase("Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getYSize());
+//			player.sendMessage(ChatColor.YELLOW + "Y" + Residence.getLanguage().getPhrase("Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getYSize());
 			player.sendMessage(ChatColor.YELLOW + "Z" + Residence.getLanguage().getPhrase("Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getZSize());
 		} else
 			player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("SelectPoints"));

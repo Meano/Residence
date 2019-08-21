@@ -103,6 +103,9 @@ Language:
     ResidenceForSale: '现在以 %2 销售领地 %1 。'
     ResidenceStopSelling: '领地不再销售。'
     ResidenceTooMany: '已达到系统允许领地的最大上限。'
+    
+    ResidenceTotalFull: '超出允许的最大领地面积上限'
+    
     ResidenceMaxRent: '已达到系统允许你租用领地的最大上限。'
     ResidenceAlreadyRent: '领地已经被租用...'
     ResidenceNotForRent: '领地不用于出租...'
