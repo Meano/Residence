@@ -149,6 +149,8 @@ Groups:
            MaxResidences: 3
            # The maximum number of physical areas a residence can have.
            MaxAreasPerResidence: 2
+           # The maximum areas of a player
+           MaxTotalAreasResidence: 16384
            # The maximum number of blocks a Residence can be, East to West (X).
            MaxEastWest: 16
            # The maximum number of blocks a Residence can be, North to South (Z).

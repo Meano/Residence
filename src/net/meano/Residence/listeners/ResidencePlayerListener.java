@@ -268,8 +268,10 @@ public class ResidencePlayerListener implements Listener {
 							player.sendMessage(
 									ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectChunk", Residence.getLanguage().getPhrase("Primary")) + 
 									ChatColor.RED + "(" + chunk.getX() + "," + chunk.getZ() + ")" +
-									ChatColor.GREEN + "!"
+									ChatColor.GREEN + " !"
 								);
+							if(Residence.getSelectionManager().hasPlacedBoth(player.getName()))
+								Residence.getSelectionManager().showSelectionInfo(player);
 						}
 						else {
 							Location loc = block.getLocation();
@@ -280,7 +282,13 @@ public class ResidencePlayerListener implements Listener {
 						if(Residence.getConfigManager().IsSelectChunk()) {
 							Chunk chunk = block.getChunk();
 							Residence.getSelectionManager().SelectChunk(player, chunk, false);
-							
+							player.sendMessage(
+									ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectChunk", Residence.getLanguage().getPhrase("Secondary")) + 
+									ChatColor.RED + "(" + chunk.getX() + "," + chunk.getZ() + ")" +
+									ChatColor.GREEN + " !"
+								);
+							if(Residence.getSelectionManager().hasPlacedBoth(player.getName()))
+								Residence.getSelectionManager().showSelectionInfo(player);
 						}
 						else {
 						Location loc = block.getLocation();
