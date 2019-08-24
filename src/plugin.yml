@@ -1,11 +1,14 @@
 name: Residence
 main: net.meano.Residence.ResidenceCommandListener
-version: 2.7
+version: 2.7.1
 api-version: 1.14
 website: www.meano.net
 description: Residence Plugin
 author: Meano
-softdepend: [Vault,PermissionsBukkit,WorldEdit]
+softdepend:
+  - Vault
+  - PermissionsBukkit
+  - WorldEdit
 
 commands:
   res:
@@ -14,9 +17,9 @@ commands:
   residence:
     description: Manage Residences
     usage: §c/residence ? for more info
-  resadmin:
-    description: Residence admin functions.
-    usage: §c/res ? or /resadmin ? for more info
+  reso:
+    description: Op Manage Residences
+    usage: §c/reso ? for more info
   resreload:
     description: Reload the entire residence plugin.
     usage: §c/resreload
@@ -32,7 +35,7 @@ commands:
 
 permissions:
   residence.admin:
-    description: Gives you access to /resadmin
+    description: Gives you access to /reso
     default: op
   residence.admin.tp:
     description: Allows to override tp flag
