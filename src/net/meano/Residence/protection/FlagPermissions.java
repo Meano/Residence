@@ -134,6 +134,8 @@ public class FlagPermissions {
 		addFlag("bucket");
 		addFlag("bank");
 		addFlag("beacon");
+		addFlag("barrel");
+
 		addResidenceOnlyFlag("trample");
 		addResidenceOnlyFlag("pvp");
 		addResidenceOnlyFlag("fireball");
@@ -156,6 +158,7 @@ public class FlagPermissions {
 		addResidenceOnlyFlag("hidden");
 		addResidenceOnlyFlag("witherdamage");
 		addPlayerOrGroupOnlyFlag("admin");
+
 		addFlagToFlagGroup("redstone", "note");
 		addFlagToFlagGroup("redstone", "pressure");
 		addFlagToFlagGroup("redstone", "lever");
@@ -181,7 +184,7 @@ public class FlagPermissions {
 		addMaterialToUseFlag(Material.ENCHANTING_TABLE, "table");
 		addMaterialToUseFlag(Material.FLETCHING_TABLE, "table");
 		addMaterialToUseFlag(Material.SMITHING_TABLE, "table");
-		
+
 		/* 1.8 Doors */
 		addMaterialToUseFlag(Material.SPRUCE_DOOR, "door");
 		addMaterialToUseFlag(Material.BIRCH_DOOR, "door");
@@ -214,16 +217,21 @@ public class FlagPermissions {
 		addMaterialToUseFlag(Material.RED_BED, "bed");
 		addMaterialToUseFlag(Material.WHITE_BED, "bed");
 		addMaterialToUseFlag(Material.YELLOW_BED, "bed");
-		
+
 		addMaterialToUseFlag(Material.LEVER, "lever");
 		addMaterialToUseFlag(Material.BREWING_STAND, "brew");
-		addMaterialToUseFlag(Material.CAKE, "cake");
 		addMaterialToUseFlag(Material.NOTE_BLOCK, "note");
 		addMaterialToUseFlag(Material.DRAGON_EGG, "egg");
 		addMaterialToUseFlag(Material.COMMAND_BLOCK, "commandblock");
+		// 铁砧
 		addMaterialToUseFlag(Material.ANVIL, "anvil");
+		addMaterialToUseFlag(Material.CHIPPED_ANVIL, "anvil");
+		addMaterialToUseFlag(Material.DAMAGED_ANVIL, "anvil");
+
 		addMaterialToUseFlag(Material.FLOWER_POT, "flowerpot");
+
 		addMaterialToUseFlag(Material.BEACON, "beacon");
+
 		addMaterialToUseFlag(Material.JUKEBOX, "container");
 		addMaterialToUseFlag(Material.CHEST, "container");
 		addMaterialToUseFlag(Material.TRAPPED_CHEST, "container");
@@ -232,8 +240,30 @@ public class FlagPermissions {
 		addMaterialToUseFlag(Material.FURNACE, "container");
 		addMaterialToUseFlag(Material.BLAST_FURNACE, "container");
 		addMaterialToUseFlag(Material.DISPENSER, "container");
+		addMaterialToUseFlag(Material.SMOKER, "container");
+
+		// 潜影盒
+		addMaterialToUseFlag(Material.BLACK_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.BLUE_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.BROWN_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.CYAN_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.GRAY_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.GREEN_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.LIGHT_BLUE_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.LIGHT_GRAY_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.MAGENTA_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.ORANGE_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.PINK_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.PURPLE_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.RED_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.WHITE_SHULKER_BOX, "container");
+		addMaterialToUseFlag(Material.YELLOW_SHULKER_BOX, "container");
+
+		addMaterialToUseFlag(Material.BARREL, "barrel");
+
 		addMaterialToUseFlag(Material.CAKE, "cake");
-		
+
 		addMaterialToUseFlag(Material.ACACIA_BUTTON, "button");
 		addMaterialToUseFlag(Material.BIRCH_BUTTON, "button");
 		addMaterialToUseFlag(Material.DARK_OAK_BUTTON, "button");
@@ -460,15 +490,13 @@ public class FlagPermissions {
 		return root;
 	}
 
-	public static FlagPermissions load(Map<String, Object> root)
-			throws Exception {
+	public static FlagPermissions load(Map<String, Object> root) throws Exception {
 		FlagPermissions newperms = new FlagPermissions();
 		return FlagPermissions.load(root, newperms);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected static FlagPermissions load(Map<String, Object> root, FlagPermissions newperms)
-			throws Exception {
+	protected static FlagPermissions load(Map<String, Object> root, FlagPermissions newperms) throws Exception {
 		newperms.playerFlags = (Map<String, Map<String, Boolean>>) root.get("PlayerFlags");
 		newperms.groupFlags = (Map<String, Map<String, Boolean>>) root.get("GroupFlags");
 		newperms.cuboidFlags = (Map<String, Boolean>) root.get("AreaFlags");

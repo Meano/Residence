@@ -9,14 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import net.meano.Residence.Residence;
 import net.meano.Residence.chat.ChatChannel;
 import net.meano.Residence.event.ResidenceChangedEvent;
 import net.meano.Residence.permissions.PermissionGroup;
 import net.meano.Residence.protection.ClaimedResidence;
 import net.meano.Residence.protection.FlagPermissions;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -49,10 +47,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.plugin.Plugin;
 
 
-@SuppressWarnings("deprecation")
 public class ResidencePlayerListener implements Listener {
 
 	protected Map<String, String> currentRes;
@@ -150,6 +146,7 @@ public class ResidencePlayerListener implements Listener {
 				mat == Material.ACACIA_DOOR ||
 				mat == Material.DARK_OAK_DOOR ||
 
+				mat == Material.OAK_FENCE_GATE ||
 				mat == Material.SPRUCE_FENCE_GATE ||
 				mat == Material.BIRCH_FENCE_GATE ||
 				mat == Material.JUNGLE_FENCE_GATE ||
@@ -157,9 +154,12 @@ public class ResidencePlayerListener implements Listener {
 				mat == Material.DARK_OAK_FENCE_GATE ||
 				
 				// TODO
+				mat == Material.OAK_TRAPDOOR ||
+				mat == Material.SPRUCE_TRAPDOOR ||
+				mat == Material.BIRCH_TRAPDOOR ||
+				mat == Material.JUNGLE_TRAPDOOR ||
 				mat == Material.ACACIA_TRAPDOOR ||
-				
-				mat == Material.OAK_FENCE_GATE ||
+				mat == Material.DARK_OAK_TRAPDOOR ||
 				
 				mat == Material.PISTON ||
 				mat == Material.PISTON_HEAD ||
@@ -170,28 +170,43 @@ public class ResidencePlayerListener implements Listener {
 				Residence.getConfigManager().getCustomBothClick().contains(block.getType().toString());
 	}
 
-	private boolean isCanUseEntity_RClickOnly(Material mat, Block block) {
-		return mat == Material.ITEM_FRAME ||
-				mat == Material.BEACON || 
-				mat == Material.FLOWER_POT ||
-				mat == Material.COMMAND_BLOCK ||
-				mat == Material.ANVIL ||
-				mat == Material.CAKE ||
-				mat == Material.NOTE_BLOCK ||
-				mat == Material.COMPARATOR ||
-				mat == Material.REPEATER  ||
-				
-				// TODO
-				mat == Material.BLACK_BED ||
-				
-				mat == Material.CRAFTING_TABLE ||
-				mat == Material.BREWING_STAND ||
-				mat == Material.ENCHANTING_TABLE ||
-				Residence.getConfigManager().getCustomRightClick().contains(block.getType().toString());
-	}
+//	private boolean isCanUseEntity_RClickOnly(Material mat, Block block) {
+//		return mat == Material.ITEM_FRAME ||
+//				mat == Material.BEACON || 
+//				mat == Material.FLOWER_POT ||
+//				mat == Material.COMMAND_BLOCK ||
+//				mat == Material.ANVIL ||
+//				mat == Material.CAKE ||
+//				mat == Material.NOTE_BLOCK ||
+//				mat == Material.COMPARATOR ||
+//				mat == Material.REPEATER  ||
+//				
+//				// Bed
+//				mat == Material.BLACK_BED ||
+//				mat == Material.BLUE_BED ||
+//				mat == Material.BROWN_BED ||
+//				mat == Material.CYAN_BED ||
+//				mat == Material.GRAY_BED ||
+//				mat == Material.GREEN_BED ||
+//				mat == Material.LIGHT_BLUE_BED ||
+//				mat == Material.LIGHT_GRAY_BED ||
+//				mat == Material.LIME_BED ||
+//				mat == Material.MAGENTA_BED ||
+//				mat == Material.ORANGE_BED ||
+//				mat == Material.PINK_BED ||
+//				mat == Material.PURPLE_BED ||
+//				mat == Material.RED_BED ||
+//				mat == Material.WHITE_BED ||
+//				mat == Material.YELLOW_BED ||
+//				
+//				mat == Material.CRAFTING_TABLE ||
+//				mat == Material.BREWING_STAND ||
+//				mat == Material.ENCHANTING_TABLE ||
+//				Residence.getConfigManager().getCustomRightClick().contains(block.getType().toString());
+//	}
 
 	private boolean isCanUseEntity(Material mat, Block block) {
-		return isCanUseEntity_BothClick(mat, block) || isCanUseEntity_RClickOnly(mat, block);
+		return FlagPermissions.getMaterialUseFlagList().containsKey(mat) && !FlagPermissions.getMaterialUseFlagList().get(mat).equals("container");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -203,9 +218,13 @@ public class ResidencePlayerListener implements Listener {
 			return;
 		}
 		Material mat = block.getType();
-		if (!((isContainer(mat, block) || isCanUseEntity_RClickOnly(mat, block)) && event.getAction() == Action.RIGHT_CLICK_BLOCK || isCanUseEntity_BothClick(mat, block) || event.getAction() == Action.PHYSICAL)) {
-			Material typeId = player.getInventory().getItemInMainHand().getType();
-			if (typeId != Residence.getConfigManager().getSelectionTooldID() && typeId != Residence.getConfigManager().getInfoToolID()) { //&& typeId != 351 && typeId != 416) {
+		if (
+			!(
+				(isContainer(mat, block) || isCanUseEntity(mat, block)) && event.getAction() == Action.RIGHT_CLICK_BLOCK ||
+				isCanUseEntity_BothClick(mat, block) || event.getAction() == Action.PHYSICAL
+			)
+		) {
+			if (heldItem != Residence.getConfigManager().getSelectionTooldID() && heldItem != Residence.getConfigManager().getInfoToolID()) {
 				return;
 			}
 		}
@@ -232,7 +251,7 @@ public class ResidencePlayerListener implements Listener {
 					return;
 				}
 			}
-			if (!perms.playerHas(player.getName(), world, "trample", perms.playerHas(player.getName(), world, "build", true)) && (mat == Material.COARSE_DIRT|| mat == Material.SOUL_SAND)) {
+			if (!perms.playerHas(player.getName(), world, "trample", perms.playerHas(player.getName(), world, "build", true)) && (mat == Material.COARSE_DIRT || mat == Material.SOUL_SAND)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -245,12 +264,6 @@ public class ResidencePlayerListener implements Listener {
 		}
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (player.getInventory().getItemInMainHand().getType() == Residence.getConfigManager().getSelectionTooldID()) {
-				Plugin wep = Bukkit.getPluginManager().getPlugin("WorldEdit");
-				if (wep != null) {
-					//if (((WorldEditPlugin) wep).getConfig().getInt("wand-item") == Residence.getConfigManager().getSelectionTooldID()) {
-					//	return;
-					//}
-				}
 				PermissionGroup group = Residence.getPermissionManager().getGroup(player);
 				if (
 						player.hasPermission("residence.select") ||
@@ -260,7 +273,7 @@ public class ResidencePlayerListener implements Listener {
 						!player.isPermissionSet("residence.create") &&
 						!player.isPermissionSet("residence.select") ||
 						resadmin
-					) {
+				) {
 					if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 						if(Residence.getConfigManager().IsSelectChunk()) {
 							Chunk chunk = block.getChunk();
@@ -278,7 +291,8 @@ public class ResidencePlayerListener implements Listener {
 							Residence.getSelectionManager().placeLoc1(player, loc);
 							player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Primary")) + ChatColor.RED + "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + ChatColor.GREEN + "!");
 						}
-					} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					}
+					else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 						if(Residence.getConfigManager().IsSelectChunk()) {
 							Chunk chunk = block.getChunk();
 							Residence.getSelectionManager().SelectChunk(player, chunk, false);
@@ -291,14 +305,14 @@ public class ResidencePlayerListener implements Listener {
 								Residence.getSelectionManager().showSelectionInfo(player);
 						}
 						else {
-						Location loc = block.getLocation();
-						Residence.getSelectionManager().placeLoc2(player, loc);
-						player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Secondary")) + ChatColor.RED + "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + ChatColor.GREEN + "!");
+							Location loc = block.getLocation();
+							Residence.getSelectionManager().placeLoc2(player, loc);
+							player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Secondary")) + ChatColor.RED + "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + ChatColor.GREEN + "!");
 						}
 					}
 				}
-			}
-			if (player.getInventory().getItemInMainHand().getType() == Residence.getConfigManager().getInfoToolID()) {
+			} 
+			else if (player.getInventory().getItemInMainHand().getType() == Residence.getConfigManager().getInfoToolID()) {
 				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 					Location loc = block.getLocation();
 					String res = Residence.getResidenceManager().getNameByLoc(loc);
@@ -315,15 +329,15 @@ public class ResidencePlayerListener implements Listener {
 			if (!resadmin) {
 				if (heldItem != null) {
 					if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-						if (player.getInventory().getItemInMainHand().getType() == Material.STRING) {
-							if (player.getInventory().getItemInMainHand().getData().getData() == 15 && block.getType() == Material.GRASS || player.getInventory().getItemInMainHand().getData().getData() == 3 && /*block.getType() == 17 &&*/ (block.getData() == 3 || block.getData() == 7 || block.getData() == 11 || block.getData() == 15)) {
-								perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
-								if (!perms.playerHas(player.getName(), world, "build", true)) {
-									event.setCancelled(true);
-									return;
-								}
-							}
-						}
+//						if (player.getInventory().getItemInMainHand().getType() == Material.STRING) {
+//							if (player.getInventory().getItemInMainHand().getData().getData() == 15 && block.getType() == Material.GRASS || player.getInventory().getItemInMainHand().getData().getData() == 3 && /*block.getType() == 17 &&*/ (block.getData() == 3 || block.getData() == 7 || block.getData() == 11 || block.getData() == 15)) {
+//								perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
+//								if (!perms.playerHas(player.getName(), world, "build", true)) {
+//									event.setCancelled(true);
+//									return;
+//								}
+//							}
+//						}
 						if (heldItem == Material.ARMOR_STAND) {
 							perms = Residence.getPermsByLocForPlayer(block.getRelative(event.getBlockFace()).getLocation(), player);
 							if (!perms.playerHas(player.getName(), world, "place", perms.playerHas(player.getName(), world, "build", true))) {
@@ -336,21 +350,41 @@ public class ResidencePlayerListener implements Listener {
 				}
 				if (isContainer(mat, block) || isCanUseEntity(mat, block)) {
 					boolean hasuse = perms.playerHas(player.getName(), world, "use", true);
-					for (Entry<Material, String> checkMat : FlagPermissions.getMaterialUseFlagList().entrySet()) {
-						if (mat == checkMat.getKey()) {
-							if (!perms.playerHas(player.getName(), world, checkMat.getValue(), hasuse)) {
-								if (hasuse || checkMat.getValue().equals("container")) {
+					String matFlag = FlagPermissions.getMaterialUseFlagList().get(mat);
+					
+					if(matFlag != null) {
+						if (!perms.playerHas(player.getName(), world, matFlag, hasuse)) {
+							if (hasuse) {
+								if(!matFlag.equals("barrel") || !perms.playerHas(player.getName(), world, "container", true)) {
 									event.setCancelled(true);
-									player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", checkMat.getValue()));
-									return;
-								} else {
-									event.setCancelled(true);
-									player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "use"));
+									player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", matFlag));
 									return;
 								}
 							}
+							else {
+								event.setCancelled(true);
+								player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "use"));
+								return;
+							}
 						}
 					}
+					
+//					for (Entry<Material, String> checkMat : FlagPermissions.getMaterialUseFlagList().entrySet()) {
+//						if (mat == checkMat.getKey()) {
+//							if (!perms.playerHas(player.getName(), world, checkMat.getValue(), hasuse)) {
+//								if (hasuse || checkMat.getValue().equals("container")) {
+//									event.setCancelled(true);
+//									player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", checkMat.getValue()));
+//									return;
+//								} else {
+//									event.setCancelled(true);
+//									player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "use"));
+//									return;
+//								}
+//							}
+//						}
+//					}
+
 					if (Residence.getConfigManager().getCustomContainers().contains(block.getType().toString())) {
 						if (!perms.playerHas(player.getName(), world, "container", hasuse)) {
 							event.setCancelled(true);
@@ -403,14 +437,14 @@ public class ResidencePlayerListener implements Listener {
 			}*/
 			if (!perms.playerHas(player.getName(), world, "use", true)) {
 				event.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "不要试图使用领地内的物品展示框，" +Residence.getLanguage().getPhrase("FlagDeny", "use"));
+				player.sendMessage(ChatColor.RED + "不要试图使用领地内的物品展示框，" + Residence.getLanguage().getPhrase("FlagDeny", "use"));
 			}
 		}else if(ClickedEntity instanceof Villager){
 			if (!perms.playerHas(player.getName(), world, "use", true)) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.RED + "不要试图与领地内的村民交易，" + Residence.getLanguage().getPhrase("FlagDeny", "use"));
 			}
-		}else if((ClickedEntity instanceof Horse)||(ClickedEntity instanceof Pig)){
+		}else if((ClickedEntity instanceof Horse) || (ClickedEntity instanceof Pig)){
 			if (!perms.playerHas(player.getName(), world, "container", true)) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.RED + "不要试图骑乘领地内的猪或者马，" + Residence.getLanguage().getPhrase("FlagDeny", "container"));
