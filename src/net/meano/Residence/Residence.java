@@ -37,7 +37,6 @@ import net.meano.Residence.selection.WorldEditSelectionManager;
 import net.meano.Residence.text.Language;
 import net.meano.Residence.text.help.HelpEntry;
 import net.meano.Residence.text.help.InformationPager;
-import net.meano.Residence.vaultinterface.ResidenceVaultAdapter;
 import net.meano.Residence.zip.ZipLibrary;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -56,8 +55,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 //import fr.crafter.tickleman.realplugin.RealPlugin;
 
 public class Residence extends JavaPlugin {
-	protected static ResidenceManager rmanager;
-	protected static SelectionManager smanager;
+	protected static ResidenceManager resManager;
+	protected static SelectionManager selectManager;
 	protected static PermissionManager gmanager;
 	protected static ConfigManager cmanager;
 	protected static ResidenceBlockListener blistener;
@@ -113,7 +112,7 @@ public class Residence extends JavaPlugin {
 					saveYml();
 				}
 			} catch (Exception ex) {
-				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] 服务器保存出错！", ex);
+				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] Auto save failed！", ex);
 			}
 		}
 	};
@@ -143,9 +142,8 @@ public class Residence extends JavaPlugin {
 				saveYml();
 				ZipLibrary.backup();
 			} catch (Exception ex) {
-				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] 服务器保存出错！", ex);
+				Logger.getLogger("Minecraft").log(Level.SEVERE, "[Residence] Disable save failed！", ex);
 			}
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] 插件已卸载!");
 		}
 	}
 
@@ -214,44 +212,44 @@ public class Residence extends JavaPlugin {
 				helppages = new HelpEntry("");
 				language = new Language();
 			}
-			economy = null;
-			if (this.getConfig().getBoolean("Global.EnableEconomy", false)) {
-				System.out.println("[Residence] Scanning for economy systems...");
-				if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
-					ResidenceVaultAdapter vault = (ResidenceVaultAdapter) gmanager.getPermissionsPlugin();
-					if (vault.economyOK()) {
-						economy = vault;
-						System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
-					}
-				}
-				if (economy == null) {
-					this.loadVaultEconomy();
-				}
-				/*
-				 * if (economy == null) { this.loadBOSEconomy();
-				 * } if (economy == null) {
-				 * this.loadEssentialsEconomy(); } if (economy
-				 * == null) { this.loadRealEconomy(); } if
-				 * (economy == null) { this.loadIConomy(); }
-				 */
-				if (economy == null) {
-					System.out.println("[Residence] 找不到经济系统插件");
-				}
-			}
+//			economy = null;
+//			if (this.getConfig().getBoolean("Global.EnableEconomy", false)) {
+//				System.out.println("[Residence] Scanning for economy systems...");
+//				if (gmanager.getPermissionsPlugin() instanceof ResidenceVaultAdapter) {
+//					ResidenceVaultAdapter vault = (ResidenceVaultAdapter) gmanager.getPermissionsPlugin();
+//					if (vault.economyOK()) {
+//						economy = vault;
+//						System.out.println("[Residence] Found Vault using economy system: " + vault.getEconomyName());
+//					}
+//				}
+//				if (economy == null) {
+//					this.loadVaultEconomy();
+//				}
+//				/*
+//				 * if (economy == null) { this.loadBOSEconomy();
+//				 * } if (economy == null) {
+//				 * this.loadEssentialsEconomy(); } if (economy
+//				 * == null) { this.loadRealEconomy(); } if
+//				 * (economy == null) { this.loadIConomy(); }
+//				 */
+//				if (economy == null) {
+//					System.out.println("[Residence] 找不到经济系统插件");
+//				}
+//			}
 			try {
 				this.loadYml();
 			} catch (Exception e) {
 				this.getLogger().log(Level.SEVERE, "Unable to load save file", e);
 				throw e;
 			}
-			if (rmanager == null) {
-				rmanager = new ResidenceManager();
+			if (resManager == null) {
+				resManager = new ResidenceManager();
 			}
 			if (leasemanager == null) {
-				leasemanager = new LeaseManager(rmanager);
+				leasemanager = new LeaseManager(resManager);
 			}
 			if (tmanager == null) {
-				tmanager = new TransactionManager(rmanager, gmanager);
+				tmanager = new TransactionManager(resManager, gmanager);
 			}
 			if (pmanager == null) {
 				pmanager = new PermissionListManager();
@@ -263,10 +261,10 @@ public class Residence extends JavaPlugin {
 				FlagPermissions.initValidFlags();
 				Plugin p = server.getPluginManager().getPlugin("WorldEdit");
 				if (p != null) {
-					smanager = new WorldEditSelectionManager(server);
+					selectManager = new WorldEditSelectionManager(server);
 					Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found WorldEdit");
 				} else {
-					smanager = new SelectionManager(server);
+					selectManager = new SelectionManager(server);
 					Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] WorldEdit NOT found!");
 				}
 
@@ -323,7 +321,6 @@ public class Residence extends JavaPlugin {
 			 * metrics.start(); } catch (IOException e) { // Failed
 			 * to submit the stats :-( }
 			 */
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] 载入! 版本 " + this.getDescription().getVersion() + " by Meano!");
 			initsuccess = true;
 		} catch (Exception ex) {
 			initsuccess = false;
@@ -353,11 +350,11 @@ public class Residence extends JavaPlugin {
 	}
 
 	public static ResidenceManager getResidenceManager() {
-		return rmanager;
+		return resManager;
 	}
 
 	public static SelectionManager getSelectionManager() {
-		return smanager;
+		return selectManager;
 	}
 
 	public static PermissionManager getPermissionManager() {
@@ -420,7 +417,7 @@ public class Residence extends JavaPlugin {
 	}
 
 	public static FlagPermissions getPermsByLoc(Location loc) {
-		ClaimedResidence res = rmanager.getByLoc(loc);
+		ClaimedResidence res = resManager.getByLoc(loc);
 		if (res != null) {
 			return res.getPermissions();
 		} else {
@@ -429,7 +426,7 @@ public class Residence extends JavaPlugin {
 	}
 
 	public static FlagPermissions getPermsByLocForPlayer(Location loc, Player player) {
-		ClaimedResidence res = rmanager.getByLoc(loc);
+		ClaimedResidence res = resManager.getByLoc(loc);
 		if (res != null) {
 			return res.getPermissions();
 		} else {
@@ -480,20 +477,20 @@ public class Residence extends JavaPlugin {
 	 * "[Residence] RealShop Economy NOT found!"); } }
 	 */
 
-	private void loadVaultEconomy() {
-		Plugin p = getServer().getPluginManager().getPlugin("Vault");
-		if (p != null) {
-			ResidenceVaultAdapter vault = new ResidenceVaultAdapter(getServer());
-			if (vault.economyOK()) {
-				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault using economy: " + vault.getEconomyName());
-				economy = vault;
-			} else {
-				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable economy system...");
-			}
-		} else {
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Vault NOT found!");
-		}
-	}
+//	private void loadVaultEconomy() {
+//		Plugin p = getServer().getPluginManager().getPlugin("Vault");
+//		if (p != null) {
+//			ResidenceVaultAdapter vault = new ResidenceVaultAdapter(getServer());
+//			if (vault.economyOK()) {
+//				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault using economy: " + vault.getEconomyName());
+//				economy = vault;
+//			} else {
+//				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable economy system...");
+//			}
+//		} else {
+//			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Vault NOT found!");
+//		}
+//	}
 
 	public static boolean isResAdminOn(Player player) {
 		if (resadminToggle.contains(player.getName())) {
@@ -518,7 +515,7 @@ public class Residence extends JavaPlugin {
 		File worldFolder = new File(saveFolder, "Worlds");
 		worldFolder.mkdirs();
 		YMLSaveHelper yml;
-		Map<String, Object> save = rmanager.save();
+		Map<String, Object> save = resManager.save();
 		for (Entry<String, Object> entry : save.entrySet()) {
 			File ymlSaveLoc = new File(worldFolder, "res_" + entry.getKey() + ".yml");
 			File tmpFile = new File(worldFolder, "tmp_res_" + entry.getKey() + ".yml");
@@ -640,18 +637,18 @@ public class Residence extends JavaPlugin {
 					worlds.put(world.getName(), yml.getRoot().get("Residences"));
 				}
 			}
-			rmanager = ResidenceManager.load(worlds);
+			resManager = ResidenceManager.load(worlds);
 			loadFile = new File(saveFolder, "forsale.yml");
 			if (loadFile.isFile()) {
 				yml = new YMLSaveHelper(loadFile);
 				yml.load();
-				tmanager = TransactionManager.load((Map<?, ?>) yml.getRoot().get("Economy"), gmanager, rmanager);
+				tmanager = TransactionManager.load((Map<?, ?>) yml.getRoot().get("Economy"), gmanager, resManager);
 			}
 			loadFile = new File(saveFolder, "leases.yml");
 			if (loadFile.isFile()) {
 				yml = new YMLSaveHelper(loadFile);
 				yml.load();
-				leasemanager = LeaseManager.load((Map<?, ?>) yml.getRoot().get("Leases"), rmanager);
+				leasemanager = LeaseManager.load((Map<?, ?>) yml.getRoot().get("Leases"), resManager);
 			}
 			loadFile = new File(saveFolder, "permlists.yml");
 			if (loadFile.isFile()) {
