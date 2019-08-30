@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.meano.Residence;
 
 import java.util.List;
@@ -20,8 +16,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-//import org.getspout.spoutapi.SpoutManager;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 public class ResidenceCommandListener extends Residence {
 
@@ -37,15 +31,15 @@ public class ResidenceCommandListener extends Residence {
 				if (Residence.getPermissionManager().isResidenceAdmin(player)) {
 					this.reloadPlugin();
 					sender.sendMessage(ChatColor.GREEN + "[Residence] Reloaded config.");
-					System.out.println("[Residence] Reloaded by " + player.getName() + ".");
+					getLogger().info("Reloaded by " + player.getName() + ".");
 				}
 			} else {
 				this.reloadPlugin();
-				System.out.println("[Residence] 领地在控制台重载.");
+				getLogger().info("Reloaded by console.");
 			}
 			return true;
 		}
-		if (command.getName().equals("resload")) {
+		else if (command.getName().equals("resload")) {
 			if (!(sender instanceof Player) || sender instanceof Player && gmanager.isResidenceAdmin((Player) sender)) {
 				try {
 					this.loadYml();
@@ -57,17 +51,19 @@ public class ResidenceCommandListener extends Residence {
 				}
 			}
 			return true;
-		} else if (command.getName().equals("resworld")) {
+		}
+		else if (command.getName().equals("resworld")) {
 			if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 				if (sender instanceof ConsoleCommandSender) {
-					rmanager.removeAllFromWorld(sender, args[1]);
+					resManager.removeAllFromWorld(sender, args[1]);
 					return true;
 				} else {
 					sender.sendMessage(ChatColor.RED + "MUST be run from console.");
 				}
 			}
 			return false;
-		} else if (command.getName().equals("rc")) {
+		}
+		else if (command.getName().equals("rc")) {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
 				String pname = player.getName();
@@ -96,21 +92,18 @@ public class ResidenceCommandListener extends Residence {
 				}
 			}
 			return true;
-		} else
-			if (command.getName().equals("res") || command.getName().equals("residence") || command.getName().equals("resadmin")) {
-			boolean resadmin = false;
+		}
+		else if (command.getName().equals("res") || command.getName().equals("residence")) {
+			return commandRes(args, false, command, sender);
+		}
+		else if (command.getName().equals("reso")) {
 			if (sender instanceof Player) {
-				if (command.getName().equals("resadmin") && gmanager.isResidenceAdmin((Player) sender)) {
-					resadmin = true;
-				}
-				if (command.getName().equals("resadmin") && !gmanager.isResidenceAdmin((Player) sender)) {
+				if (!gmanager.isResidenceAdmin((Player) sender)) {
 					((Player) sender).sendMessage(ChatColor.RED + language.getPhrase("NonAdmin"));
 					return true;
 				}
-			} else {
-				resadmin = true;
 			}
-			return commandRes(args, resadmin, command, sender);
+			return commandRes(args, true, command, sender);
 		}
 		return super.onCommand(sender, command, label, args);
 	}
@@ -177,7 +170,7 @@ public class ResidenceCommandListener extends Residence {
 				sender.sendMessage(ChatColor.RED + language.getPhrase("NoPermission"));
 				return true;
 			}
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().setOwner(args[2], true);
 				if (area.getParent() == null) {
@@ -229,7 +222,7 @@ public class ResidenceCommandListener extends Residence {
 				return false;
 			}
 			if (resadmin || args[1].endsWith(pname)) {
-				rmanager.removeAllByOwner(player, args[1]);
+				resManager.removeAllByOwner(player, args[1]);
 				player.sendMessage(ChatColor.GREEN + language.getPhrase("RemovePlayersResidences", ChatColor.YELLOW + args[1] + ChatColor.GREEN));
 			} else {
 				player.sendMessage(ChatColor.RED + language.getPhrase("NoPermission"));
@@ -247,7 +240,7 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (cmd.equals("default")) {
 			if (args.length == 2) {
-				ClaimedResidence res = rmanager.getByName(args[1]);
+				ClaimedResidence res = resManager.getByName(args[1]);
 				res.getPermissions().applyDefaultFlags(player, resadmin);
 				return true;
 			}
@@ -262,15 +255,15 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (cmd.equals("info")) {
 			if (args.length == 1) {
-				String area = rmanager.getNameByLoc(player.getLocation());
+				String area = resManager.getNameByLoc(player.getLocation());
 				if (area != null) {
-					rmanager.printAreaInfo(area, player);
+					resManager.printAreaInfo(area, player);
 				} else {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 				}
 				return true;
 			} else if (args.length == 2) {
-				rmanager.printAreaInfo(args[1], player);
+				resManager.printAreaInfo(args[1], player);
 				return true;
 			}
 			return false;
@@ -280,7 +273,7 @@ public class ResidenceCommandListener extends Residence {
 				if (args.length == 4) {
 					pname = args[3];
 				}
-				ClaimedResidence res = rmanager.getByName(args[1]);
+				ClaimedResidence res = resManager.getByName(args[1]);
 				if (res == null) {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 					return true;
@@ -298,7 +291,7 @@ public class ResidenceCommandListener extends Residence {
 			if (args.length != 1) {
 				return false;
 			}
-			String res = rmanager.getNameByLoc(player.getLocation());
+			String res = resManager.getNameByLoc(player.getLocation());
 			if (res == null) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("NotInResidence"));
 			} else {
@@ -320,18 +313,18 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (cmd.equals("list")) {
 			if (args.length == 1) {
-				rmanager.listResidences(player);
+				resManager.listResidences(player);
 				return true;
 			} else if (args.length == 2) {
 				try {
 					Integer.parseInt(args[1]);
-					rmanager.listResidences(player, page);
+					resManager.listResidences(player, page);
 				} catch (Exception ex) {
-					rmanager.listResidences(player, args[1]);
+					resManager.listResidences(player, args[1]);
 				}
 				return true;
 			} else if (args.length == 3) {
-				rmanager.listResidences(player, args[1], page);
+				resManager.listResidences(player, args[1], page);
 				return true;
 			}
 			return false;
@@ -342,32 +335,32 @@ public class ResidenceCommandListener extends Residence {
 				return true;
 			}
 			if (args.length == 1) {
-				rmanager.listResidences(player, 1, true);
+				resManager.listResidences(player, 1, true);
 				return true;
 			} else if (args.length == 2) {
 				try {
 					Integer.parseInt(args[1]);
-					rmanager.listResidences(player, page, true);
+					resManager.listResidences(player, page, true);
 				} catch (Exception ex) {
-					rmanager.listResidences(player, args[1], 1, true);
+					resManager.listResidences(player, args[1], 1, true);
 				}
 				return true;
 			} else if (args.length == 3) {
-				rmanager.listResidences(player, args[1], page, true);
+				resManager.listResidences(player, args[1], page, true);
 				return true;
 			}
 			return false;
 		}
 		if (cmd.equals("rename")) {
 			if (args.length == 3) {
-				rmanager.renameResidence(player, args[1], args[2], resadmin);
+				resManager.renameResidence(player, args[1], args[2], resadmin);
 				return true;
 			}
 			return false;
 		}
 		if (cmd.equals("renamearea")) {
 			if (args.length == 4) {
-				ClaimedResidence res = rmanager.getByName(args[1]);
+				ClaimedResidence res = resManager.getByName(args[1]);
 				if (res == null) {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 					return true;
@@ -386,7 +379,7 @@ public class ResidenceCommandListener extends Residence {
 				player.sendMessage(ChatColor.RED + language.getPhrase("NoPermission"));
 				return true;
 			}
-			ClaimedResidence res = rmanager.getByLoc(player.getLocation());
+			ClaimedResidence res = resManager.getByLoc(player.getLocation());
 			if (res == null) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("NotInResidence"));
 			} else {
@@ -399,15 +392,15 @@ public class ResidenceCommandListener extends Residence {
 			if (args.length != 3) {
 				return false;
 			}
-			rmanager.mirrorPerms(player, args[2], args[1], resadmin);
+			resManager.mirrorPerms(player, args[2], args[1], resadmin);
 			return true;
 		}
 		if (cmd.equals("listall")) {
 			if (args.length == 1) {
-				rmanager.listAllResidences(player, 1);
+				resManager.listAllResidences(player, 1);
 			} else if (args.length == 2) {
 				try {
-					rmanager.listAllResidences(player, page);
+					resManager.listAllResidences(player, page);
 				} catch (Exception ex) {
 				}
 			} else {
@@ -421,10 +414,10 @@ public class ResidenceCommandListener extends Residence {
 				return true;
 			}
 			if (args.length == 1) {
-				rmanager.listAllResidences(player, 1, true);
+				resManager.listAllResidences(player, 1, true);
 			} else if (args.length == 2) {
 				try {
-					rmanager.listAllResidences(player, page, true);
+					resManager.listAllResidences(player, page, true);
 				} catch (Exception ex) {
 				}
 			} else {
@@ -444,7 +437,7 @@ public class ResidenceCommandListener extends Residence {
 			return true;
 		}
 		if (cmd.equals("tpset")) {
-			ClaimedResidence res = rmanager.getByLoc(player.getLocation());
+			ClaimedResidence res = resManager.getByLoc(player.getLocation());
 			if (res != null) {
 				res.setTpLoc(player, resadmin);
 			} else {
@@ -456,7 +449,7 @@ public class ResidenceCommandListener extends Residence {
 			if (args.length != 2) {
 				return false;
 			}
-			ClaimedResidence res = rmanager.getByName(args[1]);
+			ClaimedResidence res = resManager.getByName(args[1]);
 			if (res == null) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 				return true;
@@ -477,7 +470,7 @@ public class ResidenceCommandListener extends Residence {
 			return commandResMessage(args, resadmin, player, page);
 		}
 		if (cmd.equals("give") && args.length == 3) {
-			rmanager.giveResidence(player, args[2], args[1], resadmin);
+			resManager.giveResidence(player, args[2], args[1], resadmin);
 			return true;
 		}
 		if (cmd.equals("server")) {
@@ -486,7 +479,7 @@ public class ResidenceCommandListener extends Residence {
 				return true;
 			}
 			if (args.length == 2) {
-				ClaimedResidence res = rmanager.getByName(args[1]);
+				ClaimedResidence res = resManager.getByName(args[1]);
 				if (res == null) {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 					return true;
@@ -504,7 +497,7 @@ public class ResidenceCommandListener extends Residence {
 				player.sendMessage(ChatColor.RED + language.getPhrase("NoPermission"));
 				return true;
 			}
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().clearFlags();
 				player.sendMessage(ChatColor.GREEN + language.getPhrase("FlagsCleared"));
@@ -562,17 +555,17 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (args.length == 2) {
 			if (args[1].equals("size") || args[1].equals("cost")) {
-				if (smanager.hasPlacedBoth(player.getName())) {
+				if (selectManager.hasPlacedBoth(player.getName())) {
 					try {
-						smanager.showSelectionInfo(player);
+						selectManager.showSelectionInfo(player);
 						return true;
 					} catch (Exception ex) {
 						Logger.getLogger(Residence.class.getName()).log(Level.SEVERE, null, ex);
 						return true;
 					}
-				} else if (smanager.worldEdit(player)) {
+				} else if (selectManager.worldEdit(player)) {
 					try {
-						smanager.showSelectionInfo(player);
+						selectManager.showSelectionInfo(player);
 						return true;
 					} catch (Exception ex) {
 						Logger.getLogger(Residence.class.getName()).log(Level.SEVERE, null, ex);
@@ -580,29 +573,29 @@ public class ResidenceCommandListener extends Residence {
 					}
 				}
 			} else if (args[1].equals("vert")) {
-				smanager.vert(player, resadmin);
+				selectManager.vert(player, resadmin);
 				return true;
 			} else if (args[1].equals("sky")) {
-				smanager.sky(player, resadmin);
+				selectManager.sky(player, resadmin);
 				return true;
 			} else if (args[1].equals("bedrock")) {
-				smanager.bedrock(player, resadmin);
+				selectManager.bedrock(player, resadmin);
 				return true;
 			} else if (args[1].equals("coords")) {
-				Location playerLoc1 = smanager.getPlayerLoc1(player.getName());
+				Location playerLoc1 = selectManager.getPlayerLoc1(player.getName());
 				if (playerLoc1 != null) {
 					player.sendMessage(ChatColor.GREEN + language.getPhrase("Primary.Selection") + ":" + ChatColor.AQUA + " (" + playerLoc1.getBlockX() + ", " + playerLoc1.getBlockY() + ", " + playerLoc1.getBlockZ() + ")");
 				}
-				Location playerLoc2 = smanager.getPlayerLoc2(player.getName());
+				Location playerLoc2 = selectManager.getPlayerLoc2(player.getName());
 				if (playerLoc2 != null) {
 					player.sendMessage(ChatColor.GREEN + language.getPhrase("Secondary.Selection") + ":" + ChatColor.AQUA + " (" + playerLoc2.getBlockX() + ", " + playerLoc2.getBlockY() + ", " + playerLoc2.getBlockZ() + ")");
 				}
 				return true;
 			} else if (args[1].equals("chunk")) {
-				smanager.selectChunk(player);
+				selectManager.selectChunk(player);
 				return true;
 			} else if (args[1].equals("worldedit")) {
-				if (smanager.worldEdit(player)) {
+				if (selectManager.worldEdit(player)) {
 					player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectionSuccess"));
 				}
 				return true;
@@ -616,7 +609,7 @@ public class ResidenceCommandListener extends Residence {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidAmount"));
 					return true;
 				}
-				smanager.modify(player, false, amount);
+				selectManager.modify(player, false, amount);
 				return true;
 			} else if (args[1].equals("shift")) {
 				int amount;
@@ -626,7 +619,7 @@ public class ResidenceCommandListener extends Residence {
 					player.sendMessage(ChatColor.RED + language.getPhrase("InvalidAmount"));
 					return true;
 				}
-				smanager.modify(player, true, amount);
+				selectManager.modify(player, true, amount);
 				return true;
 			}
 		}
@@ -635,9 +628,9 @@ public class ResidenceCommandListener extends Residence {
 			String areaName;
 			ClaimedResidence res = null;
 			if (args.length > 2) {
-				res = rmanager.getByName(args[2]);
+				res = resManager.getByName(args[2]);
 			} else {
-				res = rmanager.getByLoc(player.getLocation());
+				res = resManager.getByLoc(player.getLocation());
 			}
 			if (res == null) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
@@ -653,8 +646,8 @@ public class ResidenceCommandListener extends Residence {
 				area = res.getArea(areaName);
 			}
 			if (area != null) {
-				smanager.placeLoc1(player, area.getHighLoc());
-				smanager.placeLoc2(player, area.getLowLoc());
+				selectManager.placeLoc1(player, area.getHighLoc());
+				selectManager.placeLoc2(player, area.getLowLoc());
 				player.sendMessage(ChatColor.GREEN + language.getPhrase("SelectionArea", ChatColor.GOLD + areaName + ChatColor.GREEN + "." + ChatColor.GOLD + resName + ChatColor.GREEN));
 			} else {
 				player.sendMessage(ChatColor.RED + language.getPhrase("AreaNonExist"));
@@ -662,7 +655,7 @@ public class ResidenceCommandListener extends Residence {
 			return true;
 		} else {
 			try {
-				smanager.selectBySize(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+				selectManager.selectBySize(player, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 				return true;
 			} catch (Exception ex) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("SelectionFail"));
@@ -675,14 +668,8 @@ public class ResidenceCommandListener extends Residence {
 		if (args.length != 2) {
 			return false;
 		}
-		WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-		if (wep != null) {
-			//if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
-			//	smanager.worldEdit(player);
-			//}
-		}
-		if (smanager.hasPlacedBoth(player.getName())) {
-			rmanager.addResidence(player, args[1], smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(player.getName()), resadmin);
+		if (selectManager.hasPlacedBoth(player.getName())) {
+			resManager.addResidence(player, args[1], selectManager.getPlayerLoc1(player.getName()), selectManager.getPlayerLoc2(player.getName()), resadmin);
 			return true;
 		} else {
 			player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
@@ -697,25 +684,19 @@ public class ResidenceCommandListener extends Residence {
 		String zname;
 		String parent;
 		if (args.length == 2) {
-			parent = rmanager.getNameByLoc(player.getLocation());
+			parent = resManager.getNameByLoc(player.getLocation());
 			zname = args[1];
 		} else {
 			parent = args[1];
 			zname = args[2];
 		}
-		WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-		if (wep != null) {
-			//if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
-			//	smanager.worldEdit(player);
-			//}
-		}
-		if (smanager.hasPlacedBoth(player.getName())) {
-			ClaimedResidence res = rmanager.getByName(parent);
+		if (selectManager.hasPlacedBoth(player.getName())) {
+			ClaimedResidence res = resManager.getByName(parent);
 			if (res == null) {
 				player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 				return true;
 			}
-			res.addSubzone(player, smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(player.getName()), zname, resadmin);
+			res.addSubzone(player, selectManager.getPlayerLoc1(player.getName()), selectManager.getPlayerLoc2(player.getName()), zname, resadmin);
 			return true;
 		} else {
 			player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
@@ -726,7 +707,7 @@ public class ResidenceCommandListener extends Residence {
 	private boolean commandResArea(String[] args, boolean resadmin, Player player, int page) {
 		if (args.length == 4) {
 			if (args[1].equals("remove")) {
-				ClaimedResidence res = rmanager.getByName(args[2]);
+				ClaimedResidence res = resManager.getByName(args[2]);
 				if (res != null) {
 					res.removeArea(player, args[3], resadmin);
 				} else {
@@ -734,16 +715,10 @@ public class ResidenceCommandListener extends Residence {
 				}
 				return true;
 			} else if (args[1].equals("add")) {
-				WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-				if (wep != null) {
-					//if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
-					//	smanager.worldEdit(player);
-					//}
-				}
-				if (smanager.hasPlacedBoth(player.getName())) {
-					ClaimedResidence res = rmanager.getByName(args[2]);
+				if (selectManager.hasPlacedBoth(player.getName())) {
+					ClaimedResidence res = resManager.getByName(args[2]);
 					if (res != null) {
-						res.addArea(player, new CuboidArea(smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(player.getName())), args[3], resadmin);
+						res.addArea(player, new CuboidArea(selectManager.getPlayerLoc1(player.getName()), selectManager.getPlayerLoc2(player.getName())), args[3], resadmin);
 					} else {
 						player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 					}
@@ -752,16 +727,10 @@ public class ResidenceCommandListener extends Residence {
 				}
 				return true;
 			} else if (args[1].equals("replace")) {
-				WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-				if (wep != null) {
-					//if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
-					//	smanager.worldEdit(player);
-					//}
-				}
-				if (smanager.hasPlacedBoth(player.getName())) {
-					ClaimedResidence res = rmanager.getByName(args[2]);
+				if (selectManager.hasPlacedBoth(player.getName())) {
+					ClaimedResidence res = resManager.getByName(args[2]);
 					if (res != null) {
-						res.replaceArea(player, new CuboidArea(smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(player.getName())), args[3], resadmin);
+						res.replaceArea(player, new CuboidArea(selectManager.getPlayerLoc1(player.getName()), selectManager.getPlayerLoc2(player.getName())), args[3], resadmin);
 					} else {
 						player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 					}
@@ -772,7 +741,7 @@ public class ResidenceCommandListener extends Residence {
 			}
 		}
 		if ((args.length == 3 || args.length == 4) && args[1].equals("list")) {
-			ClaimedResidence res = rmanager.getByName(args[2]);
+			ClaimedResidence res = resManager.getByName(args[2]);
 			if (res != null) {
 				res.printAreaList(player, page);
 			} else {
@@ -781,7 +750,7 @@ public class ResidenceCommandListener extends Residence {
 			return true;
 		} else
 			if ((args.length == 3 || args.length == 4) && args[1].equals("listall")) {
-			ClaimedResidence res = rmanager.getByName(args[2]);
+			ClaimedResidence res = resManager.getByName(args[2]);
 			if (res != null) {
 				res.printAdvancedAreaList(player, page);
 			} else {
@@ -797,9 +766,9 @@ public class ResidenceCommandListener extends Residence {
 		if (sender instanceof Player) {
 			player = (Player) sender;
 			if (args.length == 1) {
-				String area = rmanager.getNameByLoc(player.getLocation());
+				String area = resManager.getNameByLoc(player.getLocation());
 				if (area != null) {
-					ClaimedResidence res = rmanager.getByName(area);
+					ClaimedResidence res = resManager.getByName(area);
 					if (res.getParent() != null) {
 						String[] split = area.split("\\.");
 						String words = split[split.length - 1];
@@ -807,7 +776,7 @@ public class ResidenceCommandListener extends Residence {
 							player.sendMessage(ChatColor.RED + language.getPhrase("DeleteSubzoneConfirm", ChatColor.YELLOW + words + ChatColor.RED));
 							deleteConfirm.put(player.getName(), area);
 						} else {
-							rmanager.removeResidence(player, area, resadmin);
+							resManager.removeResidence(player, area, resadmin);
 						}
 						return true;
 					} else {
@@ -815,7 +784,7 @@ public class ResidenceCommandListener extends Residence {
 							player.sendMessage(ChatColor.RED + language.getPhrase("DeleteConfirm", ChatColor.YELLOW + area + ChatColor.RED));
 							deleteConfirm.put(player.getName(), area);
 						} else {
-							rmanager.removeResidence(player, area, resadmin);
+							resManager.removeResidence(player, area, resadmin);
 						}
 						return true;
 					}
@@ -829,8 +798,8 @@ public class ResidenceCommandListener extends Residence {
 		if (player != null) {
 			if (!deleteConfirm.containsKey(player.getName()) || !args[1].equalsIgnoreCase(deleteConfirm.get(player.getName()))) {
 				String words = "";
-				if (rmanager.getByName(args[1]) != null) {
-					ClaimedResidence res = rmanager.getByName(args[1]);
+				if (resManager.getByName(args[1]) != null) {
+					ClaimedResidence res = resManager.getByName(args[1]);
 					if (res.getParent() != null) {
 						String[] split = args[1].split("\\.");
 						words = split[split.length - 1];
@@ -843,13 +812,13 @@ public class ResidenceCommandListener extends Residence {
 				}
 				deleteConfirm.put(player.getName(), args[1]);
 			} else {
-				rmanager.removeResidence(player, args[1], resadmin);
+				resManager.removeResidence(player, args[1], resadmin);
 			}
 		} else {
 			if (!deleteConfirm.containsKey("Console") || !args[1].equalsIgnoreCase(deleteConfirm.get("Console"))) {
 				String words = "";
-				if (rmanager.getByName(args[1]) != null) {
-					ClaimedResidence res = rmanager.getByName(args[1]);
+				if (resManager.getByName(args[1]) != null) {
+					ClaimedResidence res = resManager.getByName(args[1]);
 					if (res.getParent() != null) {
 						String[] split = args[1].split("\\.");
 						words = split[split.length - 1];
@@ -862,7 +831,7 @@ public class ResidenceCommandListener extends Residence {
 				}
 				deleteConfirm.put("Console", args[1]);
 			} else {
-				rmanager.removeResidence(args[1]);
+				resManager.removeResidence(args[1]);
 			}
 		}
 		return true;
@@ -880,7 +849,7 @@ public class ResidenceCommandListener extends Residence {
 			if (area == null) {
 				sender.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 			} else {
-				rmanager.removeResidence(player, area, resadmin);
+				resManager.removeResidence(player, area, resadmin);
 				deleteConfirm.remove(name);
 				if (player == null) {
 					sender.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("ResidenceRemove", ChatColor.YELLOW + name + ChatColor.GREEN));
@@ -892,15 +861,15 @@ public class ResidenceCommandListener extends Residence {
 
 	private boolean commandResSet(String[] args, boolean resadmin, Player player, int page) {
 		if (args.length == 3) {
-			String area = rmanager.getNameByLoc(player.getLocation());
+			String area = resManager.getNameByLoc(player.getLocation());
 			if (area != null) {
-				rmanager.getByName(area).getPermissions().setFlag(player, args[1], args[2], resadmin);
+				resManager.getByName(area).getPermissions().setFlag(player, args[1], args[2], resadmin);
 			} else {
 				player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 			}
 			return true;
 		} else if (args.length == 4) {
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().setFlag(player, args[2], args[3], resadmin);
 			} else {
@@ -913,7 +882,7 @@ public class ResidenceCommandListener extends Residence {
 
 	private boolean commandResPset(String[] args, boolean resadmin, Player player, int page) {
 		if (args.length == 3 && args[2].equalsIgnoreCase("removeall")) {
-			ClaimedResidence area = rmanager.getByLoc(player.getLocation());
+			ClaimedResidence area = resManager.getByLoc(player.getLocation());
 			if (area != null) {
 				area.getPermissions().removeAllPlayerFlags(player, args[1], resadmin);
 			} else {
@@ -921,7 +890,7 @@ public class ResidenceCommandListener extends Residence {
 			}
 			return true;
 		} else if (args.length == 4 && args[3].equalsIgnoreCase("removeall")) {
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().removeAllPlayerFlags(player, args[2], resadmin);
 			} else {
@@ -929,7 +898,7 @@ public class ResidenceCommandListener extends Residence {
 			}
 			return true;
 		} else if (args.length == 4) {
-			ClaimedResidence area = rmanager.getByLoc(player.getLocation());
+			ClaimedResidence area = resManager.getByLoc(player.getLocation());
 			if (area != null) {
 				area.getPermissions().setPlayerFlag(player, args[1], args[2], args[3], resadmin);
 			} else {
@@ -937,7 +906,7 @@ public class ResidenceCommandListener extends Residence {
 			}
 			return true;
 		} else if (args.length == 5) {
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().setPlayerFlag(player, args[2], args[3], args[4], resadmin);
 			} else {
@@ -950,7 +919,7 @@ public class ResidenceCommandListener extends Residence {
 
 	private boolean commandResGset(String[] args, boolean resadmin, Player player, int page) {
 		if (args.length == 4) {
-			ClaimedResidence area = rmanager.getByLoc(player.getLocation());
+			ClaimedResidence area = resManager.getByLoc(player.getLocation());
 			if (area != null) {
 				area.getPermissions().setGroupFlag(player, args[1], args[2], args[3], resadmin);
 			} else {
@@ -958,7 +927,7 @@ public class ResidenceCommandListener extends Residence {
 			}
 			return true;
 		} else if (args.length == 5) {
-			ClaimedResidence area = rmanager.getByName(args[1]);
+			ClaimedResidence area = resManager.getByName(args[1]);
 			if (area != null) {
 				area.getPermissions().setGroupFlag(player, args[2], args[3], args[4], resadmin);
 			} else {
@@ -975,10 +944,10 @@ public class ResidenceCommandListener extends Residence {
 		String listtype = null;
 		boolean showinfo = false;
 		if (args.length == 2 && args[1].equals("info")) {
-			res = rmanager.getByLoc(player.getLocation());
+			res = resManager.getByLoc(player.getLocation());
 			showinfo = true;
 		} else if (args.length == 3 && args[2].equals("info")) {
-			res = rmanager.getByName(args[1]);
+			res = resManager.getByName(args[1]);
 			showinfo = true;
 		}
 		if (showinfo) {
@@ -992,7 +961,7 @@ public class ResidenceCommandListener extends Residence {
 			res.getItemIgnoreList().printList(player);
 			return true;
 		} else if (args.length == 4) {
-			res = rmanager.getByName(args[1]);
+			res = resManager.getByName(args[1]);
 			listtype = args[2];
 			try {
 				mat = Material.valueOf(args[3].toUpperCase());
@@ -1001,7 +970,7 @@ public class ResidenceCommandListener extends Residence {
 				return true;
 			}
 		} else if (args.length == 3) {
-			res = rmanager.getByLoc(player.getLocation());
+			res = resManager.getByLoc(player.getLocation());
 			listtype = args[1];
 			try {
 				mat = Material.valueOf(args[2].toUpperCase());
@@ -1029,7 +998,7 @@ public class ResidenceCommandListener extends Residence {
 		if (args.length != 3) {
 			return false;
 		}
-		ClaimedResidence res = rmanager.getByName(plistener.getCurrentResidenceName(player.getName()));
+		ClaimedResidence res = resManager.getByName(plistener.getCurrentResidenceName(player.getName()));
 		if (res == null) {
 			player.sendMessage(ChatColor.RED + language.getPhrase("NotInResidence"));
 			return true;
@@ -1057,7 +1026,7 @@ public class ResidenceCommandListener extends Residence {
 				if (args.length == 3) {
 					leasemanager.renewArea(args[2], player);
 				} else {
-					leasemanager.renewArea(rmanager.getNameByLoc(player.getLocation()), player);
+					leasemanager.renewArea(resManager.getNameByLoc(player.getLocation()), player);
 				}
 				return true;
 			} else if (args[1].equals("cost")) {
@@ -1071,8 +1040,8 @@ public class ResidenceCommandListener extends Residence {
 					}
 					return true;
 				} else {
-					String area = rmanager.getNameByLoc(player.getLocation());
-					ClaimedResidence res = rmanager.getByName(area);
+					String area = resManager.getNameByLoc(player.getLocation());
+					ClaimedResidence res = resManager.getByName(area);
 					if (area == null || res == null) {
 						player.sendMessage(ChatColor.RED + language.getPhrase("InvalidArea"));
 						return true;
@@ -1146,7 +1115,7 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (command.equals("info")) {
 			if (args.length == 2) {
-				String areaname = rmanager.getNameByLoc(player.getLocation());
+				String areaname = resManager.getNameByLoc(player.getLocation());
 				tmanager.viewSaleInfo(areaname, player);
 				if (cmanager.enabledRentSystem() && rentmanager.isForRent(areaname)) {
 					rentmanager.printRentInfo(player, areaname);
@@ -1296,14 +1265,14 @@ public class ResidenceCommandListener extends Residence {
 		}
 		if (args[1].equals("enter")) {
 			enter = true;
-			res = rmanager.getByLoc(player.getLocation());
+			res = resManager.getByLoc(player.getLocation());
 			start = 2;
 		} else if (args[1].equals("leave")) {
-			res = rmanager.getByLoc(player.getLocation());
+			res = resManager.getByLoc(player.getLocation());
 			start = 2;
 		} else if (args[1].equals("remove")) {
 			if (args.length > 2 && args[2].equals("enter")) {
-				res = rmanager.getByLoc(player.getLocation());
+				res = resManager.getByLoc(player.getLocation());
 				if (res != null) {
 					res.setEnterLeaveMessage(player, null, true, resadmin);
 				} else {
@@ -1311,7 +1280,7 @@ public class ResidenceCommandListener extends Residence {
 				}
 				return true;
 			} else if (args.length > 2 && args[2].equals("leave")) {
-				res = rmanager.getByLoc(player.getLocation());
+				res = resManager.getByLoc(player.getLocation());
 				if (res != null) {
 					res.setEnterLeaveMessage(player, null, false, resadmin);
 				} else {
@@ -1323,13 +1292,13 @@ public class ResidenceCommandListener extends Residence {
 			return true;
 		} else if (args.length > 2 && args[2].equals("enter")) {
 			enter = true;
-			res = rmanager.getByName(args[1]);
+			res = resManager.getByName(args[1]);
 			start = 3;
 		} else if (args.length > 2 && args[2].equals("leave")) {
-			res = rmanager.getByName(args[1]);
+			res = resManager.getByName(args[1]);
 			start = 3;
 		} else if (args.length > 2 && args[2].equals("remove")) {
-			res = rmanager.getByName(args[1]);
+			res = resManager.getByName(args[1]);
 			if (args.length != 4) {
 				return false;
 			}
@@ -1369,9 +1338,9 @@ public class ResidenceCommandListener extends Residence {
 		if (args.length == 1 || args.length == 2 || args.length == 3) {
 			ClaimedResidence res;
 			if (args.length == 1) {
-				res = rmanager.getByLoc(player.getLocation());
+				res = resManager.getByLoc(player.getLocation());
 			} else {
-				res = rmanager.getByName(args[1]);
+				res = resManager.getByName(args[1]);
 			}
 			if (res != null) {
 				res.printSubzoneList(player, page);
@@ -1389,10 +1358,10 @@ public class ResidenceCommandListener extends Residence {
 			player.sendMessage(ChatColor.GREEN + language.getPhrase("CompassTargetReset"));
 			return true;
 		}
-		if (rmanager.getByName(args[1]) != null) {
-			if (rmanager.getByName(args[1]).getWorld().equalsIgnoreCase(player.getWorld().getName())) {
-				Location low = rmanager.getByName(args[1]).getArea("main").getLowLoc();
-				Location high = rmanager.getByName(args[1]).getArea("main").getHighLoc();
+		if (resManager.getByName(args[1]) != null) {
+			if (resManager.getByName(args[1]).getWorld().equalsIgnoreCase(player.getWorld().getName())) {
+				Location low = resManager.getByName(args[1]).getArea("main").getLowLoc();
+				Location high = resManager.getByName(args[1]).getArea("main").getHighLoc();
 				Location mid = new Location(low.getWorld(), (low.getBlockX() + high.getBlockX()) / 2, (low.getBlockY() + high.getBlockY()) / 2, (low.getBlockZ() + high.getBlockZ()) / 2);
 				player.setCompassTarget(mid);
 				player.sendMessage(ChatColor.GREEN + language.getPhrase("CompassTargetSet", ChatColor.YELLOW + args[1] + ChatColor.GREEN));
