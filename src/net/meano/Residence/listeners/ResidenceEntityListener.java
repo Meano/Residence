@@ -276,22 +276,22 @@ public class ResidenceEntityListener implements Listener {
 		if((entity instanceof Villager)||(entity instanceof Animals)){
 			if (!perms.playerHas(DamagePlayer.getName(), world, "destory", perms.playerHas(DamagePlayer.getName(), world, "build", true))) {
 				event.setCancelled(true);
-				DamagePlayer.sendMessage(ChatColor.RED + "²»ÒªÊÔÍ¼ÉËº¦ÁìµØÄÚµÄ¶¯ÎïºÍ´åÃñ£¬" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
+				DamagePlayer.sendMessage(ChatColor.RED + "ä¸è¦è¯•å›¾ä¼¤å®³é¢†åœ°å†…çš„åŠ¨ç‰©å’Œæ‘æ°‘ï¼Œ" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
 			}
 		}else if (entity instanceof Hanging){
 			if (!perms.playerHas(DamagePlayer.getName(), world, "destory", perms.playerHas(DamagePlayer.getName(), world, "build", true))) {
 				event.setCancelled(true);
-				DamagePlayer.sendMessage(ChatColor.RED + "²»ÒªÊÔÍ¼ÆÆ»µÁìµØÄÚµÄ»­»òÎïÆ·Õ¹Ê¾¿ò£¬" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
+				DamagePlayer.sendMessage(ChatColor.RED + "ä¸è¦è¯•å›¾ç ´åé¢†åœ°å†…çš„ç”»æˆ–ç‰©å“å±•ç¤ºæ¡†ï¼Œ" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
 			}
 		}else if(entity instanceof ArmorStand){
 			if (!perms.playerHas(DamagePlayer.getName(), world, "destory", perms.playerHas(DamagePlayer.getName(), world, "build", true))) {
 				event.setCancelled(true);
-				DamagePlayer.sendMessage(ChatColor.RED + "²»ÒªÊÔÍ¼ÆÆ»µÁìµØÄÚµÄ¿ø¼×¼Ü£¬" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
+				DamagePlayer.sendMessage(ChatColor.RED + "ä¸è¦è¯•å›¾ç ´åé¢†åœ°å†…çš„ç›”ç”²æ¶ï¼Œ" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
 			}
 		}else if(entity instanceof Minecart){
 			if (!perms.playerHas(DamagePlayer.getName(), world, "destory", perms.playerHas(DamagePlayer.getName(), world, "build", true))) {
 				event.setCancelled(true);
-				DamagePlayer.sendMessage(ChatColor.RED + "²»ÒªÊÔÍ¼ÆÆ»µÁìµØÄÚµÄ¿ó³µ£¬" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
+				DamagePlayer.sendMessage(ChatColor.RED + "ä¸è¦è¯•å›¾ç ´åé¢†åœ°å†…çš„çŸ¿è½¦ï¼Œ" + Residence.getLanguage().getPhrase("FlagDeny", "destory"));
 			}
 		}
 	}

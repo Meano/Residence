@@ -122,7 +122,7 @@ public class ResidenceBlockListener implements Listener {
 		}
 	}
 
-	//Ê·À³Ä··½¿é²éÑ¯
+	// å²è±å§†æ–¹å—æŸ¥è¯¢
 	public Block getEndSlimeBlock(Block FirstSlimeBlock, BlockFace SlimeBlockDirection) {
 		Block EndSlimeBlock;
 		EndSlimeBlock = FirstSlimeBlock;
@@ -135,7 +135,7 @@ public class ResidenceBlockListener implements Listener {
 		return EndSlimeBlock.getRelative(SlimeBlockDirection);
 	}
 	
-	//»îÈûÀ­¶¯ÊÂ¼ş
+	// æ´»å¡æ‹‰åŠ¨äº‹ä»¶
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
 		FlagPermissions perms = Residence.getPermsByLoc(event.getBlock().getLocation());
@@ -144,24 +144,24 @@ public class ResidenceBlockListener implements Listener {
 			return;
 		}
 		//--------------------------------------------------------------------------------------------------------------------------//
-		//Õ³ĞÔ»îÈû¼°Õ³Òº¿éÀ­¶¯±£»¤
+		//ç²˜æ€§æ´»å¡åŠç²˜æ¶²å—æ‹‰åŠ¨ä¿æŠ¤
 		BlockFace RetractFace = event.getDirection().getOppositeFace();
 		Block RetractBlock = event.getBlock().getRelative(RetractFace).getRelative(RetractFace);
 		ClaimedResidence resPiston = Residence.getResidenceManager().getByLoc(event.getBlock().getLocation());
-		// ÈôÎªÕ³ĞÔ»îÈû
+		// è‹¥ä¸ºç²˜æ€§æ´»å¡
 		if (event.getBlock().getType().equals(Material.STICKY_PISTON)) {
-			// ÈôÀ­¶¯·½¿éÎªÊ·À³Ä··½¿é
+			// è‹¥æ‹‰åŠ¨æ–¹å—ä¸ºå²è±å§†æ–¹å—
 			if (RetractBlock.getType().equals(Material.SLIME_BLOCK)) {
 				ClaimedResidence resEndSlimeBlock = Residence.getResidenceManager().getByLoc(getEndSlimeBlock(RetractBlock, RetractFace).getLocation());
 				if (resEndSlimeBlock != resPiston) {
 					event.setCancelled(true);
-					Bukkit.broadcast("À­¶¯È¡Ïû£¡", "AnimalsRestrict.SlimeBlock");
+					Bukkit.broadcast("æ‹‰åŠ¨å–æ¶ˆï¼", "AnimalsRestrict.SlimeBlock");
 				}
 			} else {
 				ClaimedResidence resRetract = Residence.getResidenceManager().getByLoc(RetractBlock.getLocation());
 				if (resRetract != resPiston) {
 					event.setCancelled(true);
-					Bukkit.broadcast("À­¶¯È¡Ïû£¡", "AnimalsRestrict.SlimeBlock");
+					Bukkit.broadcast("æ‹‰åŠ¨å–æ¶ˆï¼", "AnimalsRestrict.SlimeBlock");
 				}
 				// }
 			}
@@ -191,7 +191,7 @@ public class ResidenceBlockListener implements Listener {
 				resExtend = Residence.getResidenceManager().getByLoc(b.getLocation());
 				if (resExtend != null) {
 					event.setCancelled(true);
-					Bukkit.broadcast("·¢Éú´ÓÁìµØÍâÍÆ¶¯ÎïÆ·½øÁìµØµÄÊÂ¼ş£¡", "AnimalsRestrict.SlimeBlock");
+					Bukkit.broadcast("å‘ç”Ÿä»é¢†åœ°å¤–æ¨åŠ¨ç‰©å“è¿›é¢†åœ°çš„äº‹ä»¶ï¼", "AnimalsRestrict.SlimeBlock");
 					return;
 				}
 			}
