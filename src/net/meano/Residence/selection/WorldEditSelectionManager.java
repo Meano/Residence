@@ -1,7 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.meano.Residence.selection;
 
 import org.bukkit.Location;
@@ -13,10 +10,6 @@ import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldedit.regions.CuboidRegion;
 
-/**
- *
- * @author Administrator
- */
 public class WorldEditSelectionManager extends SelectionManager {
 
 	public WorldEditSelectionManager(Server serv) {
@@ -100,3 +93,4 @@ public class WorldEditSelectionManager extends SelectionManager {
 		super.showSelectionInfo(player);
 	}
 }
+ */

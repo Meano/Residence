@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.meano.PermissionsBukkit.PermissionsPlugin;
+//import net.meano.PermissionsBukkit.PermissionsPlugin;
 import net.meano.Residence.Residence;
 import net.meano.Residence.protection.FlagPermissions;
-import net.meano.Residence.vaultinterface.ResidenceVaultAdapter;
+//import net.meano.Residence.vaultinterface.ResidenceVaultAdapter;
 import org.bukkit.Server;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,20 +104,20 @@ public class PermissionManager {
 		Server server = Residence.getServ();
 		Plugin p = server.getPluginManager().getPlugin("Vault");
 		if (p != null) {
-			ResidenceVaultAdapter vault = new ResidenceVaultAdapter(server);
-			if (vault.permissionsOK()) {
-				perms = vault;
-				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault using permissions plugin:" + vault.getPermissionsName());
-				return;
-			} else {
-				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable permissions system...");
-			}
+//			ResidenceVaultAdapter vault = new ResidenceVaultAdapter(server);
+//			if (vault.permissionsOK()) {
+//				perms = vault;
+//				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault using permissions plugin:" + vault.getPermissionsName());
+//				return;
+//			} else {
+//				Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found Vault, but Vault reported no usable permissions system...");
+//			}
 		}
 		p = server.getPluginManager().getPlugin("PermissionsBukkit");
 		if (p != null) {
-			perms = new PermissionsBukkitAdapter((PermissionsPlugin) p);
-			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found PermissionsBukkit Plugin!");
-			return;
+//			perms = new PermissionsBukkitAdapter((PermissionsPlugin) p);
+//			Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found PermissionsBukkit Plugin!");
+//			return;
 		}
 		/*
 		 * p = server.getPluginManager().getPlugin("bPermissions"); if

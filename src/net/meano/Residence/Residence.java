@@ -33,7 +33,7 @@ import net.meano.Residence.protection.PermissionListManager;
 import net.meano.Residence.protection.ResidenceManager;
 import net.meano.Residence.protection.WorldFlagManager;
 import net.meano.Residence.selection.SelectionManager;
-import net.meano.Residence.selection.WorldEditSelectionManager;
+//import net.meano.Residence.selection.WorldEditSelectionManager;
 import net.meano.Residence.text.Language;
 import net.meano.Residence.text.help.HelpEntry;
 import net.meano.Residence.text.help.InformationPager;
@@ -261,8 +261,8 @@ public class Residence extends JavaPlugin {
 				FlagPermissions.initValidFlags();
 				Plugin p = server.getPluginManager().getPlugin("WorldEdit");
 				if (p != null) {
-					selectManager = new WorldEditSelectionManager(server);
-					Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found WorldEdit");
+//					selectManager = new WorldEditSelectionManager(server);
+//					Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] Found WorldEdit");
 				} else {
 					selectManager = new SelectionManager(server);
 					Logger.getLogger("Minecraft").log(Level.INFO, "[Residence] WorldEdit NOT found!");
