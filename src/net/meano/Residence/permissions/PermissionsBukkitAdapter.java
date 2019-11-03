@@ -1,8 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.meano.Residence.permissions;
 
 import java.util.List;
@@ -11,10 +7,6 @@ import net.meano.PermissionsBukkit.PermissionsPlugin;
 import net.meano.Residence.Residence;
 import org.bukkit.entity.Player;
 
-/**
- * 
- * @author Administrator
- */
 public class PermissionsBukkitAdapter implements PermissionsInterface {
 
 	PermissionsPlugin newperms;
@@ -44,3 +36,5 @@ public class PermissionsBukkitAdapter implements PermissionsInterface {
 	}
 
 }
+
+ */

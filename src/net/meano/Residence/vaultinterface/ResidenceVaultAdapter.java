@@ -1,8 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.meano.Residence.vaultinterface;
 
 import net.meano.Residence.economy.EconomyInterface;
@@ -14,10 +10,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-/**
- * 
- * @author Administrator
- */
 public class ResidenceVaultAdapter implements EconomyInterface, PermissionsInterface {
 
 	public static Permission permissions = null;
@@ -145,5 +137,6 @@ public class ResidenceVaultAdapter implements EconomyInterface, PermissionsInter
 	public String getName() {
 		return "Vault";
 	}
-
 }
+
+ */
